@@ -6,6 +6,23 @@
 
 ---
 
+## 2026-07-25（部署上线 ✅）
+
+### ✅ 已完成
+- [x] 项目名称更新：「星尘占卜 · 樱花塔罗牌」
+- [x] 网址选定：`stardust-seer.vercel.app`
+- [x] Git 初始化 + 推送到 GitHub（`lclclclcjf/stardust-seer`）
+- [x] Vercel 部署成功，线上正常运行
+
+### 🔗 线上地址
+- **主站**：https://stardust-seer.vercel.app/
+- **GitHub**：https://github.com/lclclclcjf/stardust-seer
+
+### 💡 备注
+- iPhone 用 Safari 打开线上地址 → 添加到主屏幕，即可像 App 一样使用
+
+---
+
 ## 2026-07-24（全部 7 步完成 ✅）
 
 ### ✅ 已完成
