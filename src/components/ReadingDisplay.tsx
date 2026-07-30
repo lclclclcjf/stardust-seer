@@ -66,12 +66,17 @@ export default function ReadingDisplay({
       {/* 解读内容 */}
       <div className="space-y-3">
         <div>
-          <h5 className="text-sm font-semibold text-ink-600 mb-1">
+          <h5 className="text-sm font-semibold text-ink-600 mb-2">
             {isReversed ? '逆位含义 ──' : '正位含义 ──'}
           </h5>
-          <p className="text-sm text-ink-600 leading-relaxed">
-            {isReversed ? card.meaningReversed : card.meaningUpright}
-          </p>
+          <div className="text-sm text-ink-600 leading-relaxed space-y-3">
+            {(isReversed ? card.meaningReversed : card.meaningUpright)
+              .split('\n\n')
+              .filter(Boolean)
+              .map((paragraph, i) => (
+                <p key={i}>{paragraph.trim()}</p>
+              ))}
+          </div>
         </div>
 
         {/* 元素/星座 */}
