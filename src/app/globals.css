@@ -28,7 +28,7 @@
   --color-gold-light: #e0cfa0;
 
   /* 功能色 */
-  --color-bg-primary: #fff5f6;
+  --color-bg-primary: transparent;
   --color-bg-card: #ffffff;
   --color-text-primary: #3a2a1a;
   --color-text-secondary: #7c6855;
@@ -41,7 +41,9 @@
 
 /* 全局基础样式 */
 body {
-  background: #fff5f6;
+  background: linear-gradient(to bottom, #f2a5b3 0%, #fff5f6 40%, #ffffff 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
   color: #3a2a1a;
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
