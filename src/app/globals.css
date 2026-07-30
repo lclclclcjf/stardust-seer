@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* 樱花粉主色调 */
+  --color-sakura-50: #fff0f3;
+  --color-sakura-100: #ffe0e6;
+  --color-sakura-200: #ffc2cd;
+  --color-sakura-300: #ffb3c1;
+  --color-sakura-400: #ff99ab;
+  --color-sakura-500: #ff7f95;
+  --color-sakura-600: #e6657a;
+  --color-sakura-700: #cc4c60;
+
+  /* 棕黑色文字 */
+  --color-ink-50: #f5f0eb;
+  --color-ink-100: #e8dcd0;
+  --color-ink-200: #c4b5a5;
+  --color-ink-300: #a08d7a;
+  --color-ink-400: #7c6855;
+  --color-ink-500: #5c4a3a;
+  --color-ink-600: #4a3828;
+  --color-ink-700: #3a2a1a;
+  --color-ink-800: #2c1d0f;
+  --color-ink-900: #1a1008;
+
+  /* 强调色 */
+  --color-gold: #c9a96e;
+  --color-gold-light: #e0cfa0;
+
+  /* 功能色 */
+  --color-bg-primary: #fff5f6;
+  --color-bg-card: #ffffff;
+  --color-text-primary: #3a2a1a;
+  --color-text-secondary: #7c6855;
+  --color-text-muted: #a08d7a;
+  --color-border: #ffc2cd;
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* 全局基础样式 */
+body {
+  background: #fff5f6;
+  color: #3a2a1a;
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* iPhone 安全区域 */
+@supports (padding-top: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* 选中文字颜色 */
+::selection {
+  background: #ffb3c1;
+  color: #3a2a1a;
+}
