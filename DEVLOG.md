@@ -14,6 +14,19 @@
 - [x] Git 初始化 + 推送到 GitHub（`lclclclcjf/stardust-seer`）
 - [x] Vercel 部署成功，线上正常运行
 
+### 🎨 本轮大更新（2026-07-26 前后）
+- [x] **AI 牌组系统**（`src/styles/ai-decks.ts`）— 6 套 AI 生成牌面（星海/云河/深空/糖果星球/极光冰川/沙漠流星）
+- [x] **CSS 模块重构** — 牌面卡片迁移至 `tarot-card.module.css`，抽牌页迁移至 `draw.module.css`
+- [x] **设计演示系统** — `/demos` 页面（garden/eclipse/theatre 三种变体）+ `TarotDemo` 组件
+- [x] **牌面卡片视觉升级** — PNG 卡牌素材 + 逆位封印 + 符号舞台 + 光泽效果
+- [x] **抽牌仪式感重写** — 深色氛围抽牌页 + 3D 翻转动画
+- [x] **根路由重构** — 首页改用 `TarotDemo` 组件（`experienceMode="production"`）
+- [x] 解读排版优化 — 🌸 段落前缀 + 段间空行
+- [x] 全局背景渐变（粉色 → 白色）
+- [x] TypeScript 零报错 ✅
+- [x] 推送到 GitHub ✅
+- [x] Vercel 自动部署中 🔄
+
 ### 🔗 线上地址
 - **主站**：https://stardust-seer.vercel.app/
 - **GitHub**：https://github.com/lclclclcjf/stardust-seer
