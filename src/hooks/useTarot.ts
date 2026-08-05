@@ -3,19 +3,23 @@
 import { useCallback } from 'react';
 import { allCards, getCardById } from '@/data/cards';
 import { getSpreadById } from '@/data/spreads';
-import type { DrawnCard, DrawResult, ThemeId } from '@/types';
+import type { AiDeckId, DrawnCard, DrawResult, ThemeId } from '@/types';
 import { drawRandom, randomReversed } from '@/lib/shuffle';
 import { useLocalStorage, setToStorage, getFromStorage } from './useLocalStorage';
 
 const HISTORY_KEY = 'tarot-history';
 const CURRENT_DRAW_KEY = 'tarot-current-draw';
-const SETTINGS_KEY = 'tarot-settings';
 const MAX_HISTORY = 100;
 
 /**
  * 执行抽牌
  */
-export function performDraw(spreadId: string, themeId: ThemeId, question: string): DrawResult {
+export function performDraw(
+  spreadId: string,
+  themeId: ThemeId,
+  question: string,
+  aiDeckId?: AiDeckId,
+): DrawResult {
   const spread = getSpreadById(spreadId);
   if (!spread) throw new Error(`未知牌阵: ${spreadId}`);
 
@@ -33,6 +37,7 @@ export function performDraw(spreadId: string, themeId: ThemeId, question: string
     timestamp: Date.now(),
     spreadId,
     themeId,
+    aiDeckId: themeId === 'ai' ? aiDeckId : undefined,
     question,
     cards,
   };
@@ -95,8 +100,8 @@ export function useTarot() {
   );
 
   const draw = useCallback(
-    (spreadId: string, themeId: ThemeId, question: string) => {
-      const result = performDraw(spreadId, themeId, question);
+    (spreadId: string, themeId: ThemeId, question: string, aiDeckId?: AiDeckId) => {
+      const result = performDraw(spreadId, themeId, question, aiDeckId);
       setCurrentDraw(result);
       setHistory((prev) => {
         const updated = [result, ...prev];

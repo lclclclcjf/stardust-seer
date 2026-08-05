@@ -1,13 +1,17 @@
 'use client';
 
-import { useState, useEffect, useCallback, use } from 'react';
+import { use, useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { ThemeId, DrawnCard } from '@/types';
+import type { DrawnCard, ThemeId } from '@/types';
+import { parseAiDeckId } from '@/styles/ai-decks';
 import { getSpreadById } from '@/data/spreads';
 import { getCardById } from '@/data/cards';
 import { performDraw } from '@/hooks/useTarot';
 import CardBack from '@/components/CardBack';
 import CardFace from '@/components/CardFace';
+import styles from './draw.module.css';
+
+type DrawPhase = 'shuffling' | 'selecting' | 'revealing';
 
 export default function DrawPage({
   searchParams,
@@ -19,136 +23,173 @@ export default function DrawPage({
 
   const spreadId = (params.spread as string) || 'single';
   const themeId = (params.theme as ThemeId) || 'sakura';
+  const aiDeckId = parseAiDeckId(params.aiDeck);
   const question = (params.question as string) || '';
 
   const spread = getSpreadById(spreadId);
-  const [phase, setPhase] = useState<'shuffling' | 'selecting' | 'revealing'>('shuffling');
+  const [phase, setPhase] = useState<DrawPhase>('shuffling');
   const [drawnCards, setDrawnCards] = useState<DrawnCard[]>([]);
   const [revealed, setRevealed] = useState<boolean[]>([]);
   const [drawId, setDrawId] = useState<string | null>(null);
 
-  // 执行抽牌
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const result = performDraw(spreadId, themeId, question);
+    const timer = window.setTimeout(() => {
+      const result = performDraw(spreadId, themeId, question, aiDeckId);
       setDrawnCards(result.cards);
       setDrawId(result.id);
       setRevealed(new Array(result.cards.length).fill(false));
       setPhase('selecting');
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, [spreadId, themeId, question]);
+    }, 1500);
 
-  // 点击翻开一张牌
+    return () => window.clearTimeout(timer);
+  }, [spreadId, themeId, question, aiDeckId]);
+
+  useEffect(() => {
+    if (phase !== 'revealing' || !drawId) return;
+
+    const timer = window.setTimeout(() => {
+      router.push(`/reading?drawId=${drawId}`);
+    }, 1500);
+
+    return () => window.clearTimeout(timer);
+  }, [phase, drawId, router]);
+
   const handleReveal = useCallback(
     (index: number) => {
-      if (revealed[index]) return;
-      const newRevealed = [...revealed];
-      newRevealed[index] = true;
-      setRevealed(newRevealed);
+      if (phase !== 'selecting' || revealed[index]) return;
 
-      // 全部翻开后跳转
-      if (newRevealed.every(Boolean)) {
-        setTimeout(() => {
-          router.push(`/reading?drawId=${drawId}`);
-        }, 800);
+      const nextRevealed = [...revealed];
+      nextRevealed[index] = true;
+      setRevealed(nextRevealed);
+
+      if (nextRevealed.every(Boolean)) {
+        setPhase('revealing');
       }
     },
-    [revealed, drawId, router]
+    [phase, revealed]
   );
 
   if (!spread) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-bg-primary p-6">
-        <p className="text-ink-500">无效的牌阵</p>
-        <button onClick={() => router.push('/')} className="mt-4 text-sakura-500">
-          返回首页
-        </button>
-      </div>
+      <main className={styles.page}>
+        <div className={styles.invalidState}>
+          <p>这个牌阵不存在。</p>
+          <button type="button" onClick={() => router.push('/')}>
+            返回首页
+          </button>
+        </div>
+      </main>
     );
   }
 
+  const revealedCount = revealed.filter(Boolean).length;
+  const layoutClass =
+    spread.cardCount === 1
+      ? styles.singleGrid
+      : spread.cardCount === 3
+        ? styles.threeGrid
+        : styles.tenGrid;
+  const cardSize = spread.cardCount === 1 ? 'lg' : spread.cardCount === 3 ? 'md' : 'sm';
+
   return (
-    <div className="flex flex-col items-center min-h-screen bg-bg-primary p-6">
-      {/* 页面标题 */}
-      <div className="text-center mb-8 pt-4">
-        <h1 className="text-2xl font-bold text-ink-700">{spread.nameZh}</h1>
-        <p className="text-ink-300 text-sm mt-1">
-          {phase === 'shuffling' && '正在洗牌...'}
-          {phase === 'selecting' && `请翻开 ${spread.cardCount} 张牌`}
-          {phase === 'revealing' && '解读准备中...'}
-        </p>
-      </div>
+    <main className={styles.page}>
+      <div className={styles.backdrop} aria-hidden="true" />
+      <div className={styles.mist} aria-hidden="true" />
 
-      {/* 洗牌动画 */}
-      {phase === 'shuffling' && (
-        <div className="flex-1 flex items-center justify-center">
-          <div className="flex gap-4 animate-pulse">
-            {[...Array(5)].map((_, i) => (
-              <div
-                key={i}
-                className="w-16 h-24 bg-gradient-to-br from-sakura-300 to-sakura-500 rounded-xl shadow-lg animate-bounce"
-                style={{ animationDelay: `${i * 0.15}s` }}
-              />
-            ))}
-          </div>
-        </div>
-      )}
+      <header className={styles.topBar}>
+        <button type="button" className={styles.backButton} onClick={() => router.back()}>
+          <span aria-hidden="true">←</span>
+          返回庭院
+        </button>
+        <p>SAKURA DIVINATION</p>
+        <span className={styles.stepMark}>抽牌仪式 · 02</span>
+      </header>
 
-      {/* 选牌阶段 */}
-      {(phase === 'selecting' || phase === 'revealing') && drawnCards.length > 0 && (
-        <div className="flex-1 w-full max-w-lg">
-          {/* 按牌阵布局排列 */}
-          <div className={`
-            grid gap-4 justify-items-center
-            ${spread.cardCount === 1 ? 'grid-cols-1' : ''}
-            ${spread.cardCount === 3 ? 'grid-cols-3' : ''}
-            ${spread.cardCount === 10 ? 'grid-cols-4' : ''}
-          `}>
-            {drawnCards.map((dc, i) => {
-              const card = getCardById(dc.cardId);
-              if (!card) return null;
-              const position = spread.positions[i];
-              return (
-                <div key={i} className="flex flex-col items-center gap-2">
-                  {/* 位置标签 */}
-                  <span className="text-xs text-ink-400 font-medium">
-                    {position?.nameZh || `牌 ${i + 1}`}
-                  </span>
-                  {/* 牌面 */}
-                  {revealed[i] ? (
-                    <CardFace
-                      card={card}
-                      themeId={themeId}
-                      isReversed={dc.isReversed}
-                      size={spread.cardCount >= 10 ? 'sm' : 'md'}
-                    />
-                  ) : (
-                    <CardBack
-                      themeId={themeId}
-                      onClick={() => handleReveal(i)}
-                      size={spread.cardCount >= 10 ? 'sm' : 'md'}
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* 底部提示 */}
-      {phase === 'selecting' && (
-        <div className="mt-8 mb-6">
-          <p className="text-ink-300 text-sm text-center">
-            点击牌背翻开卡片
-            <br />
-            <span className="text-xs text-ink-200">
-              已翻开 {revealed.filter(Boolean).length}/{spread.cardCount}
-            </span>
+      <section className={styles.ritual} aria-live="polite">
+        <div className={styles.heading}>
+          <p className={styles.eyebrow}>{spread.nameEn}</p>
+          <h1>{spread.nameZh}</h1>
+          <p className={styles.status}>
+            {phase === 'shuffling' && '静候牌组回应你的问题'}
+            {phase === 'selecting' && `依次翻开 ${spread.cardCount} 张牌`}
+            {phase === 'revealing' && '牌面已经显现，正在进入解读'}
           </p>
+          {question && <p className={styles.question}>「{question}」</p>}
         </div>
+
+        {phase === 'shuffling' && (
+          <div className={styles.shuffleStage}>
+            <div className={styles.shuffleDeck} aria-label="正在洗牌">
+              {[0, 1, 2].map((index) => (
+                <div key={index} className={styles.shuffleCard}>
+                  <CardBack themeId={themeId} aiDeckId={aiDeckId} size="md" className={styles.fillCard} />
+                </div>
+              ))}
+            </div>
+            <p>让呼吸慢下来，答案正在靠近</p>
+          </div>
+        )}
+
+        {(phase === 'selecting' || phase === 'revealing') && drawnCards.length > 0 && (
+          <div className={styles.cardViewport}>
+            <div className={`${styles.cardGrid} ${layoutClass}`}>
+              {drawnCards.map((drawnCard, index) => {
+                const card = getCardById(drawnCard.cardId);
+                if (!card) return null;
+
+                const isRevealed = revealed[index];
+                const position = spread.positions[index];
+
+                return (
+                  <article key={`${drawnCard.cardId}-${index}`} className={styles.cardSlot}>
+                    <div className={styles.positionLabel}>
+                      <span>{String(index + 1).padStart(2, '0')}</span>
+                      <strong>{position?.nameZh || `牌 ${index + 1}`}</strong>
+                      <small>{position?.nameEn}</small>
+                    </div>
+
+                    <button
+                      type="button"
+                      className={`${styles.flipCard} ${isRevealed ? styles.isRevealed : ''}`}
+                      onClick={() => handleReveal(index)}
+                      disabled={isRevealed || phase === 'revealing'}
+                      aria-label={isRevealed ? `${position?.nameZh || '牌卡'}已翻开` : `翻开${position?.nameZh || '牌卡'}`}
+                    >
+                      <span className={styles.flipInner}>
+                        <span className={`${styles.cardSide} ${styles.backSide}`}>
+                          <CardBack themeId={themeId} aiDeckId={aiDeckId} size={cardSize} className={styles.fillCard} />
+                        </span>
+                        <span className={`${styles.cardSide} ${styles.faceSide}`}>
+                          <CardFace
+                            card={card}
+                            themeId={themeId}
+                            aiDeckId={aiDeckId}
+                            isReversed={drawnCard.isReversed}
+                            size={cardSize}
+                            className={styles.fillCard}
+                          />
+                        </span>
+                      </span>
+                    </button>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </section>
+
+      {(phase === 'selecting' || phase === 'revealing') && (
+        <footer className={styles.progress}>
+          <span className={styles.progressLine} aria-hidden="true">
+            <i style={{ width: `${(revealedCount / spread.cardCount) * 100}%` }} />
+          </span>
+          <p>
+            {phase === 'selecting' ? '轻触牌背，让它翻向你' : '请停留片刻，感受牌面的第一印象'}
+            <span>{revealedCount} / {spread.cardCount}</span>
+          </p>
+        </footer>
       )}
-    </div>
+    </main>
   );
 }

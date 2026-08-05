@@ -47,13 +47,22 @@ export interface DrawResult {
   id: string;
   timestamp: number;
   spreadId: string;
-  themeId: string;
+  themeId: ThemeId;
+  aiDeckId?: AiDeckId;
   question: string;
   cards: DrawnCard[];
 }
 
 // 牌面风格主题
 export type ThemeId = 'sakura' | 'dreamy' | 'classic' | 'ai';
+
+export type AiDeckId =
+  | 'star-sea'
+  | 'cloud-river'
+  | 'deep-space'
+  | 'candy-planet'
+  | 'aurora-glacier'
+  | 'desert-meteor';
 
 export interface ThemeConfig {
   id: ThemeId;

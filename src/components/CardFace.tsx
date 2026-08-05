@@ -1,7 +1,9 @@
 'use client';
 
-import type { TarotCard, ThemeId } from '@/types';
+import type { AiDeckId, TarotCard, ThemeId } from '@/types';
+import { getAiDeck } from '@/styles/ai-decks';
 import { themeStyles } from '@/styles/themes';
+import styles from './tarot-card.module.css';
 
 interface CardFaceProps {
   card: TarotCard;
@@ -9,6 +11,8 @@ interface CardFaceProps {
   isReversed?: boolean;
   revealed?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  className?: string;
+  aiDeckId?: AiDeckId;
 }
 
 export default function CardFace({
@@ -17,67 +21,89 @@ export default function CardFace({
   isReversed = false,
   revealed = true,
   size = 'md',
+  className = '',
+  aiDeckId,
 }: CardFaceProps) {
   const style = themeStyles[themeId];
-
-  const sizeClasses = {
-    sm: 'w-24 h-36 text-sm',
-    md: 'w-36 h-52 text-base',
-    lg: 'w-48 h-72 text-lg',
-  };
+  const aiDeck = themeId === 'ai' ? getAiDeck(aiDeckId) : null;
 
   if (!revealed) return null;
 
-  return (
-    <div
-      className={`
-        ${sizeClasses[size]}
-        ${style.cardBg}
-        ${style.cardBorder}
-        ${style.cardGlow}
-        border-2 rounded-2xl flex flex-col items-center justify-center
-        select-none transition-all duration-500
-        ${isReversed ? 'rotate-180' : ''}
-      `}
-    >
-      {/* 牌号 */}
-      <div className={`text-center mb-1 ${size === 'sm' ? 'text-xs' : ''}`}>
-        <span className={`font-bold ${style.cardText} opacity-60 font-mono`}>
+  if (aiDeck || themeId === 'sakura' || themeId === 'dreamy' || themeId === 'classic') {
+    const illustratedFace =
+      aiDeck
+        ? styles.aiFace
+        : themeId === 'dreamy'
+        ? styles.dreamyFace
+        : themeId === 'classic'
+          ? styles.classicFace
+          : styles.sakuraFace;
+    const sheen =
+      aiDeck
+        ? styles.aiSheen
+        : themeId === 'dreamy'
+        ? styles.pearlSheen
+        : themeId === 'classic'
+          ? styles.classicSheen
+          : styles.lacquerSheen;
+    return (
+      <div
+        className={`${styles.card} ${styles[size]} ${illustratedFace} ${
+          aiDeck?.contentTone === 'dark' ? styles.aiContentDark : ''
+        } ${aiDeck?.labelTone === 'dark' ? styles.aiLabelDark : ''} ${
+          isReversed ? styles.reversed : ''
+        } ${className}`}
+        style={aiDeck ? { backgroundImage: `url('${aiDeck.faceImage}')` } : undefined}
+      >
+        <span className={sheen} aria-hidden="true" />
+
+        <span className={styles.faceNumber}>
           {card.suit === 'major' ? romanNumeral(card.number) : card.number}
         </span>
-      </div>
 
-      {/* 符号 */}
-      <div className={`${size === 'sm' ? 'text-2xl' : 'text-3xl'} mb-2`}>
-        <span>{card.symbol}</span>
-      </div>
-
-      {/* 牌名 */}
-      <div className="text-center px-2">
-        <p
-          className={`font-bold leading-tight ${style.cardText} ${
-            size === 'sm' ? 'text-xs' : size === 'lg' ? 'text-base' : 'text-sm'
-          }`}
-        >
-          {card.nameZh}
-        </p>
-        <p
-          className={`${style.cardText} opacity-50 leading-tight mt-0.5 ${
-            size === 'sm' ? 'text-[10px]' : size === 'lg' ? 'text-sm' : 'text-xs'
-          }`}
-        >
-          {card.nameEn}
-        </p>
-      </div>
-
-      {/* 逆位标记 */}
-      {isReversed && (
-        <span className="absolute top-2 right-2 text-xs bg-ink-700 text-white rounded-full px-2 py-0.5 rotate-180">
-          逆
+        <span className={styles.symbolStage} aria-hidden="true">
+          <span className={styles.cardSymbol}>{cardGlyph(card)}</span>
         </span>
-      )}
+
+        <span className={styles.faceTitle}>
+          <strong>{card.nameZh}</strong>
+          <small>{card.nameEn}</small>
+        </span>
+
+        {isReversed && <span className={styles.reverseSeal}>逆位</span>}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={`${styles.card} ${styles[size]} ${styles.fallbackFace} ${
+        style.cardBg
+      } ${style.cardBorder} ${style.cardGlow} ${isReversed ? styles.reversed : ''} ${className}`}
+    >
+      <span className={`${styles.fallbackNumber} ${style.cardText}`}>
+        {card.suit === 'major' ? romanNumeral(card.number) : card.number}
+      </span>
+      <span className={styles.fallbackSymbol}>{card.symbol}</span>
+      <span className={`${styles.fallbackTitle} ${style.cardText}`}>
+        <strong>{card.nameZh}</strong>
+        <small>{card.nameEn}</small>
+      </span>
+      {isReversed && <span className={styles.reverseSeal}>逆位</span>}
     </div>
   );
+}
+
+function cardGlyph(card: TarotCard): string {
+  const glyphs: Record<TarotCard['suit'], string> = {
+    major: '✦',
+    wands: '火',
+    cups: '水',
+    swords: '風',
+    pentacles: '土',
+  };
+
+  return glyphs[card.suit];
 }
 
 function romanNumeral(n: number): string {

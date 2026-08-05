@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "🌸 星尘占卜 · 樱花塔罗牌",
-  description: "星尘占卜 — 塔罗牌、算卦等玄学工具，四种牌面风格，中英双语解读",
+  title: "樱雾庭院 · 樱花塔罗",
+  description: "在樱花庭院中选择牌阵、翻开牌面，聆听此刻内心的声音。",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#ffb3c1",
+  themeColor: "#142922",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,

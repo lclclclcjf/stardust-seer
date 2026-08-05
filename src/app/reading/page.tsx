@@ -4,6 +4,7 @@ import { use, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import type { ThemeId } from '@/types';
+import { DEFAULT_AI_DECK_ID } from '@/styles/ai-decks';
 import { getDrawDetails } from '@/hooks/useTarot';
 import CardFace from '@/components/CardFace';
 import ReadingDisplay from '@/components/ReadingDisplay';
@@ -48,6 +49,10 @@ export default function ReadingPage({
 
   const { draw, spread, cards } = details;
   const themeId = draw.themeId as ThemeId;
+  const aiDeckId = draw.aiDeckId ?? DEFAULT_AI_DECK_ID;
+  const retryHref = `/draw?spread=${draw.spreadId}&theme=${themeId}${
+    themeId === 'ai' ? `&aiDeck=${aiDeckId}` : ''
+  }`;
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-bg-primary">
@@ -58,7 +63,7 @@ export default function ReadingPage({
             ← 返回首页
           </Link>
           <h1 className="text-lg font-bold text-ink-700">{spread.nameZh}</h1>
-          <Link href={`/draw?spread=${draw.spreadId}&theme=${themeId}`} className="text-sakura-500 text-sm font-medium hover:text-sakura-600 transition-colors">
+          <Link href={retryHref} className="text-sakura-500 text-sm font-medium hover:text-sakura-600 transition-colors">
             再抽一次
           </Link>
         </div>
@@ -92,6 +97,7 @@ export default function ReadingPage({
                   <CardFace
                     card={card}
                     themeId={themeId}
+                    aiDeckId={aiDeckId}
                     isReversed={isReversed}
                     size={spread.cardCount >= 10 ? 'sm' : 'md'}
                   />
