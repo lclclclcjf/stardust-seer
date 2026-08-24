@@ -27,6 +27,17 @@
 - [x] 推送到 GitHub ✅
 - [x] Vercel 自动部署中 🔄
 
+### 🆕 最新改动部署（用户修改）
+- [x] 解读页 CSS 模块化（`reading.module.css`）
+- [x] UI 主题切换支持（light/dark/auto 模式，通过 `?theme=` 参数）
+- [x] `ReadingDisplay` 支持 className 传入
+- [x] 新背景素材（sakura-garden-hero v2 亮暗两版）
+- [x] `performDraw` 增加 uiTheme 参数
+- [x] TypeScript 零报错 ✅
+- [x] 生产构建通过（10 个路由）✅
+- [x] 推送到 GitHub ✅
+- [x] Vercel 自动部署中 🔄
+
 ### 🔗 线上地址
 - **主站**：https://stardust-seer.vercel.app/
 - **GitHub**：https://github.com/lclclclcjf/stardust-seer
