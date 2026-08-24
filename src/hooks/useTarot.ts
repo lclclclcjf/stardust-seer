@@ -3,7 +3,7 @@
 import { useCallback } from 'react';
 import { allCards, getCardById } from '@/data/cards';
 import { getSpreadById } from '@/data/spreads';
-import type { AiDeckId, DrawnCard, DrawResult, ThemeId } from '@/types';
+import type { AiDeckId, DrawnCard, DrawResult, ThemeId, UiThemeMode } from '@/types';
 import { drawRandom, randomReversed } from '@/lib/shuffle';
 import { useLocalStorage, setToStorage, getFromStorage } from './useLocalStorage';
 
@@ -19,6 +19,7 @@ export function performDraw(
   themeId: ThemeId,
   question: string,
   aiDeckId?: AiDeckId,
+  uiTheme: UiThemeMode = 'auto',
 ): DrawResult {
   const spread = getSpreadById(spreadId);
   if (!spread) throw new Error(`未知牌阵: ${spreadId}`);
@@ -38,6 +39,7 @@ export function performDraw(
     spreadId,
     themeId,
     aiDeckId: themeId === 'ai' ? aiDeckId : undefined,
+    uiTheme,
     question,
     cards,
   };

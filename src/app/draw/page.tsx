@@ -4,6 +4,7 @@ import { use, useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { DrawnCard, ThemeId } from '@/types';
 import { parseAiDeckId } from '@/styles/ai-decks';
+import { parseDemoTheme } from '@/components/design-demos/demo-theme';
 import { getSpreadById } from '@/data/spreads';
 import { getCardById } from '@/data/cards';
 import { performDraw } from '@/hooks/useTarot';
@@ -24,6 +25,7 @@ export default function DrawPage({
   const spreadId = (params.spread as string) || 'single';
   const themeId = (params.theme as ThemeId) || 'sakura';
   const aiDeckId = parseAiDeckId(params.aiDeck);
+  const uiTheme = parseDemoTheme(params.uiTheme);
   const question = (params.question as string) || '';
 
   const spread = getSpreadById(spreadId);
@@ -34,7 +36,7 @@ export default function DrawPage({
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      const result = performDraw(spreadId, themeId, question, aiDeckId);
+      const result = performDraw(spreadId, themeId, question, aiDeckId, uiTheme);
       setDrawnCards(result.cards);
       setDrawId(result.id);
       setRevealed(new Array(result.cards.length).fill(false));
@@ -42,17 +44,17 @@ export default function DrawPage({
     }, 1500);
 
     return () => window.clearTimeout(timer);
-  }, [spreadId, themeId, question, aiDeckId]);
+  }, [spreadId, themeId, question, aiDeckId, uiTheme]);
 
   useEffect(() => {
     if (phase !== 'revealing' || !drawId) return;
 
     const timer = window.setTimeout(() => {
-      router.push(`/reading?drawId=${drawId}`);
+      router.push(`/reading?drawId=${drawId}&uiTheme=${uiTheme}`);
     }, 1500);
 
     return () => window.clearTimeout(timer);
-  }, [phase, drawId, router]);
+  }, [phase, drawId, router, uiTheme]);
 
   const handleReveal = useCallback(
     (index: number) => {

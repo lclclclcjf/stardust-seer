@@ -9,6 +9,7 @@ interface ReadingDisplayProps {
   position: SpreadPosition;
   isReversed: boolean;
   themeId: ThemeId;
+  className?: string;
 }
 
 export default function ReadingDisplay({
@@ -16,11 +17,12 @@ export default function ReadingDisplay({
   position,
   isReversed,
   themeId,
+  className = '',
 }: ReadingDisplayProps) {
   const style = themeStyles[themeId];
 
   return (
-    <div className={`${style.cardBg} border ${style.cardBorder} rounded-2xl p-5 ${style.cardGlow}`}>
+    <div className={`${style.cardBg} border ${style.cardBorder} rounded-2xl p-5 ${style.cardGlow} ${className}`}>
       {/* 位置说明 */}
       <div className="mb-3 pb-3 border-b border-ink-100/50">
         <h3 className="text-base font-bold text-ink-700">

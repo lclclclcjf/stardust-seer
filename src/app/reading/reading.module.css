@@ -1,0 +1,159 @@
+.page {
+  --reading-bg: #edf0ec;
+  --reading-raised: #ffffff;
+  --reading-line: #c9d0cc;
+  --reading-shadow: rgb(45 70 57 / 18%);
+  --color-ink-100: #d7ded9;
+  --color-ink-200: #aebbb4;
+  --color-ink-300: #7e8e86;
+  --color-ink-400: #62736a;
+  --color-ink-500: #485a50;
+  --color-ink-600: #34483e;
+  --color-ink-700: #26362f;
+  position: relative;
+  isolation: isolate;
+  overflow-x: hidden;
+  background: var(--reading-bg);
+  color: var(--color-ink-700);
+}
+
+.page::before,
+.page::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+}
+
+.page::before {
+  background: center / cover no-repeat url('/demo-assets/sakura-garden-hero-light-v2.png');
+}
+
+.page::after {
+  z-index: -1;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--reading-bg) 94%, transparent), color-mix(in srgb, var(--reading-bg) 66%, transparent) 52%, color-mix(in srgb, var(--reading-bg) 36%, transparent)),
+    linear-gradient(180deg, color-mix(in srgb, var(--reading-bg) 22%, transparent), transparent 38%, color-mix(in srgb, var(--reading-bg) 42%, transparent));
+}
+
+.light {
+  color-scheme: light;
+}
+
+.dark {
+  --reading-bg: #111916;
+  --reading-raised: #1d2b25;
+  --reading-line: #34463c;
+  --reading-shadow: rgb(2 10 6 / 45%);
+  --color-ink-100: #405349;
+  --color-ink-200: #71847a;
+  --color-ink-300: #91a299;
+  --color-ink-400: #aebbb4;
+  --color-ink-500: #c8d2cc;
+  --color-ink-600: #e0e7e3;
+  --color-ink-700: #f2f4f1;
+  color-scheme: dark;
+}
+
+.dark::before {
+  background-image: url('/demo-assets/sakura-garden-hero-dark-v2.png');
+}
+
+.dark::after {
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--reading-bg) 76%, transparent), color-mix(in srgb, var(--reading-bg) 48%, transparent) 52%, color-mix(in srgb, var(--reading-bg) 28%, transparent)),
+    linear-gradient(180deg, color-mix(in srgb, var(--reading-bg) 16%, transparent), transparent 38%, color-mix(in srgb, var(--reading-bg) 54%, transparent));
+}
+
+.dark :global(.text-ink-700),
+.dark :global(.text-ink-600) {
+  color: #e8edea !important;
+}
+
+.dark :global(.text-ink-500),
+.dark :global(.text-ink-400) {
+  color: #b8c5be !important;
+}
+
+.dark :global(.text-ink-300),
+.dark :global(.text-ink-200) {
+  color: #91a299 !important;
+}
+
+.dark :global(.bg-white\/60) {
+  background-color: rgb(255 255 255 / 9%) !important;
+}
+
+.dark :global(.bg-ink-100) {
+  background-color: rgb(64 83 73 / 72%) !important;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+.glassPanel {
+  border-color: color-mix(in srgb, var(--reading-line) 74%, transparent) !important;
+  background: color-mix(in srgb, var(--reading-raised) 58%, transparent) !important;
+  box-shadow: 0 18px 48px color-mix(in srgb, var(--reading-shadow) 72%, transparent) !important;
+  backdrop-filter: blur(14px) saturate(112%);
+}
+
+@media (prefers-color-scheme: dark) {
+  .auto {
+    --reading-bg: #111916;
+    --reading-raised: #1d2b25;
+    --reading-line: #34463c;
+    --reading-shadow: rgb(2 10 6 / 45%);
+    --color-ink-100: #405349;
+    --color-ink-200: #71847a;
+    --color-ink-300: #91a299;
+    --color-ink-400: #aebbb4;
+    --color-ink-500: #c8d2cc;
+    --color-ink-600: #e0e7e3;
+    --color-ink-700: #f2f4f1;
+    color-scheme: dark;
+  }
+
+  .auto::before {
+    background-image: url('/demo-assets/sakura-garden-hero-dark-v2.png');
+  }
+
+  .auto::after {
+    background:
+      linear-gradient(90deg, color-mix(in srgb, var(--reading-bg) 76%, transparent), color-mix(in srgb, var(--reading-bg) 48%, transparent) 52%, color-mix(in srgb, var(--reading-bg) 28%, transparent)),
+      linear-gradient(180deg, color-mix(in srgb, var(--reading-bg) 16%, transparent), transparent 38%, color-mix(in srgb, var(--reading-bg) 54%, transparent));
+  }
+
+  .auto :global(.text-ink-700),
+  .auto :global(.text-ink-600) {
+    color: #e8edea !important;
+  }
+
+  .auto :global(.text-ink-500),
+  .auto :global(.text-ink-400) {
+    color: #b8c5be !important;
+  }
+
+  .auto :global(.text-ink-300),
+  .auto :global(.text-ink-200) {
+    color: #91a299 !important;
+  }
+
+  .auto :global(.bg-white\/60) {
+    background-color: rgb(255 255 255 / 9%) !important;
+  }
+
+  .auto :global(.bg-ink-100) {
+    background-color: rgb(64 83 73 / 72%) !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glassPanel {
+    background: var(--reading-raised) !important;
+    backdrop-filter: none;
+  }
+}

@@ -3,7 +3,8 @@
   display: flex;
   min-height: 100svh;
   flex-direction: column;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   background: #07120f;
   color: #f4e8de;
   isolation: isolate;
@@ -199,15 +200,16 @@
 }
 
 .threeGrid {
-  --card-width: clamp(10.5rem, 17vw, 14rem);
+  --card-width: clamp(12rem, 18.75vw, 16.5rem);
   grid-template-columns: repeat(3, var(--card-width));
+  column-gap: clamp(1.5rem, 3vw, 2.75rem);
 }
 
 .tenGrid {
-  --card-width: clamp(6.6rem, 8vw, 7.6rem);
+  --card-width: clamp(7.6rem, 10.6vw, 9.25rem);
   grid-template-columns: repeat(5, var(--card-width));
-  column-gap: 1.45rem;
-  row-gap: 1.65rem;
+  column-gap: clamp(1.1rem, 2vw, 1.8rem);
+  row-gap: 1.9rem;
 }
 
 .cardSlot {
@@ -252,6 +254,43 @@
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 0.52rem;
   letter-spacing: 0.08em;
+}
+
+.threeGrid .positionLabel {
+  min-height: 3rem;
+  margin-bottom: 0.85rem;
+  column-gap: 0.68rem;
+}
+
+.threeGrid .positionLabel > span {
+  font-size: 0.7rem;
+}
+
+.threeGrid .positionLabel strong {
+  font-size: 0.86rem;
+}
+
+.threeGrid .positionLabel small {
+  font-size: 0.6rem;
+}
+
+.tenGrid .positionLabel {
+  min-height: 2.9rem;
+  margin-bottom: 0.78rem;
+  column-gap: 0.6rem;
+}
+
+.tenGrid .positionLabel > span {
+  font-size: 0.66rem;
+}
+
+.tenGrid .positionLabel strong {
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+}
+
+.tenGrid .positionLabel small {
+  font-size: 0.57rem;
 }
 
 .flipCard {
@@ -413,16 +452,27 @@
   }
 
   .threeGrid {
-    --card-width: 9rem;
+    --card-width: 10.25rem;
     min-width: max-content;
     padding: 0 1.5rem;
   }
 
   .tenGrid {
-    --card-width: 7.2rem;
+    --card-width: 8.25rem;
     min-width: 100%;
     grid-template-columns: repeat(2, var(--card-width));
-    column-gap: 1.5rem;
+    column-gap: 1.15rem;
+    row-gap: 1.6rem;
+  }
+
+  .threeGrid .positionLabel strong,
+  .tenGrid .positionLabel strong {
+    font-size: 0.82rem;
+  }
+
+  .threeGrid .positionLabel small,
+  .tenGrid .positionLabel small {
+    font-size: 0.59rem;
   }
 
   .progress {

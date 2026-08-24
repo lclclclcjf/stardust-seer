@@ -49,6 +49,7 @@ export interface DrawResult {
   spreadId: string;
   themeId: ThemeId;
   aiDeckId?: AiDeckId;
+  uiTheme?: UiThemeMode;
   question: string;
   cards: DrawnCard[];
 }
@@ -63,6 +64,8 @@ export type AiDeckId =
   | 'candy-planet'
   | 'aurora-glacier'
   | 'desert-meteor';
+
+export type UiThemeMode = 'auto' | 'light' | 'dark';
 
 export interface ThemeConfig {
   id: ThemeId;

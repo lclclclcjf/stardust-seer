@@ -27,8 +27,8 @@ const DEMOS: Record<DemoVariant, DemoConfig> = {
     eyebrow: "樱雾庭院",
     title: ["在花落之前", "问问内心"],
     intro: "选一副牌阵，把此刻最真实的问题交给直觉。",
-    image: "/demo-assets/sakura-garden-hero-light.png",
-    darkImage: "/demo-assets/sakura-garden-hero-dark.png",
+    image: "/demo-assets/sakura-garden-hero-light-v2.png",
+    darkImage: "/demo-assets/sakura-garden-hero-dark-v2.png",
     imageAlt: "樱花、石灯笼、水钵与塔罗牌组成的静谧庭院",
     defaultCardTheme: "sakura",
   },
@@ -197,8 +197,8 @@ export default function TarotDemo({
                   className={styles.heroImage}
                   src={demo.image}
                   alt={demo.imageAlt}
-                  width={1792}
-                  height={1024}
+                  width={2560}
+                  height={1440}
                   sizes={variant === "garden" ? "100vw" : "(max-width: 767px) 92vw, 48vw"}
                   loading="eager"
                 />
@@ -208,8 +208,8 @@ export default function TarotDemo({
                 className={styles.heroImage}
                 src={activeImage}
                 alt={demo.imageAlt}
-                width={variant === "garden" ? 1792 : 1120}
-                height={variant === "garden" ? 1024 : 1400}
+                width={variant === "garden" ? 2560 : 1120}
+                height={variant === "garden" ? 1440 : 1400}
                 sizes={variant === "garden" ? "100vw" : "(max-width: 767px) 92vw, 48vw"}
                 loading="eager"
               />
@@ -230,6 +230,7 @@ export default function TarotDemo({
 
           <form className={styles.readingForm} action="/draw" method="get">
             <input name="aiDeck" type="hidden" value={aiDeckId} readOnly />
+            <input name="uiTheme" type="hidden" value={themeMode} readOnly />
             <fieldset className={styles.controlGroup}>
               <legend>牌面风格</legend>
               <div className={styles.themeGrid}>
