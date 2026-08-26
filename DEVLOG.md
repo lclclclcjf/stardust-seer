@@ -38,6 +38,20 @@
 - [x] 推送到 GitHub ✅
 - [x] Vercel 自动部署中 🔄
 
+### 🚀 最大版本更新（用户修改）
+- [x] **AI 深度解读** — `/api/readings/generate` API + `AiReadingPanel` 组件 + OpenAI 集成
+- [x] **扇形选牌仪式** — 卡牌扇形展开，凭直觉点击选牌，含自动选牌模式
+- [x] **6 套新 AI 牌组** — 深渊珍珠/云上神殿/翡翠河流/月下锦鲤/日曜天文台/糖霜水晶
+- [x] 历史页 CSS 模块化（`history.module.css`）+ 花园风格空状态
+- [x] 速率限制（5次/分钟）保护 AI API
+- [x] 测试文件（`tests/ai-reading-*.test.mjs`）
+- [x] `.env.example` 模板提交，`.env.local` 正确排除（含密钥 ✅ 未泄露）
+- [x] TypeScript 零报错 ✅
+- [x] 生产构建通过（13 个路由）✅
+- [x] 推送到 GitHub ✅
+- [x] Vercel 自动部署中 🔄
+- [ ] ⚠️ 待用户操作：Vercel 环境变量配置（OPENAI_API_KEY 等）
+
 ### 🔗 线上地址
 - **主站**：https://stardust-seer.vercel.app/
 - **GitHub**：https://github.com/lclclclcjf/stardust-seer
