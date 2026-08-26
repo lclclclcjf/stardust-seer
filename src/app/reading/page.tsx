@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useSyncExternalStore } from 'react';
+import { Suspense, use, useSyncExternalStore } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import type { ThemeId } from '@/types';
@@ -9,6 +9,8 @@ import { parseDemoTheme } from '@/components/design-demos/demo-theme';
 import { getDrawDetails } from '@/hooks/useTarot';
 import CardFace from '@/components/CardFace';
 import ReadingDisplay from '@/components/ReadingDisplay';
+import { AiReadingLoading, AiReadingPanel, AiReadingQuestionPrompt } from '@/components/AiReadingPanel';
+import type { AiReadingRequest } from '@/features/ai-reading/schemas';
 import styles from './reading.module.css';
 
 export default function ReadingPage({
@@ -58,6 +60,36 @@ export default function ReadingPage({
   const retryHref = `/draw?spread=${draw.spreadId}&theme=${themeId}${
     themeId === 'ai' ? `&aiDeck=${aiDeckId}` : ''
   }&uiTheme=${uiTheme}`;
+  const question = draw.question.trim();
+  const aiRequest: AiReadingRequest | null = question
+    ? {
+        drawId: draw.id,
+        question,
+        spreadId: draw.spreadId,
+        cards: draw.cards.map(({ cardId, position, isReversed }) => ({
+          cardId,
+          position,
+          isReversed,
+        })),
+      }
+    : null;
+  const detailedReading = (
+    <section data-purpose="basic-card-reading">
+      <h2 className="text-sm font-medium text-ink-500 mb-4 text-center">详细解读</h2>
+      <div className="flex flex-col gap-4">
+        {cards.map(({ card, position, isReversed }, index) => card && position ? (
+          <ReadingDisplay
+            key={index}
+            card={card}
+            position={position}
+            isReversed={isReversed}
+            themeId={themeId}
+            className={styles.glassPanel}
+          />
+        ) : null)}
+      </div>
+    </section>
+  );
 
   return (
     <div className={`${styles.page} ${styles[uiTheme]} flex flex-col items-center min-h-screen`}>
@@ -76,10 +108,10 @@ export default function ReadingPage({
 
       <main className={`${styles.content} flex flex-col w-full max-w-lg mx-auto px-6 pb-12 gap-6`}>
         {/* 用户问题 */}
-        {draw.question && (
+        {question && (
           <div className={`${styles.glassPanel} rounded-2xl px-5 py-3 border border-sakura-100`}>
             <p className="text-xs text-ink-300 mb-1">你的问题</p>
-            <p className="text-sm text-ink-600">{draw.question}</p>
+            <p className="text-sm text-ink-600">{question}</p>
           </div>
         )}
 
@@ -112,27 +144,16 @@ export default function ReadingPage({
           </div>
         </div>
 
-        {/* 逐张解读 */}
-        <div>
-          <h3 className="text-sm font-medium text-ink-500 mb-4 text-center">
-            详细解读
-          </h3>
-          <div className="flex flex-col gap-4">
-            {cards.map(({ card, position, isReversed }, i) => {
-              if (!card || !position) return null;
-              return (
-                <ReadingDisplay
-                  key={i}
-                  card={card}
-                  position={position}
-                  isReversed={isReversed}
-                  themeId={themeId}
-                  className={styles.glassPanel}
-                />
-              );
-            })}
-          </div>
-        </div>
+        {aiRequest ? (
+          <Suspense fallback={<AiReadingLoading className={styles.glassPanel} />}>
+            <AiReadingPanel request={aiRequest} fallback={detailedReading} className={styles.glassPanel} />
+          </Suspense>
+        ) : (
+          <>
+            <AiReadingQuestionPrompt className={styles.glassPanel} />
+            {detailedReading}
+          </>
+        )}
 
         {/* 底部操作 */}
         <div className="flex gap-3 pt-4">

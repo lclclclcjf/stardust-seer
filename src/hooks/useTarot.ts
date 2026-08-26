@@ -27,12 +27,41 @@ export function performDraw(
   const count = spread.cardCount;
   const selected = drawRandom(allCards, count);
 
-  const cards: DrawnCard[] = selected.map((card, i) => ({
+  const cards: DrawnCard[] = selected.map((card, position) => ({
     cardId: card.id,
-    position: i,
+    position,
     isReversed: randomReversed(),
   }));
 
+  return persistDraw(spreadId, themeId, question, cards, aiDeckId, uiTheme);
+}
+
+export function performSelectedDraw(
+  spreadId: string,
+  themeId: ThemeId,
+  question: string,
+  cards: DrawnCard[],
+  aiDeckId?: AiDeckId,
+  uiTheme: UiThemeMode = 'auto',
+): DrawResult {
+  const spread = getSpreadById(spreadId);
+  const uniqueCards = new Set(cards.map((card) => card.cardId));
+  const hasOnlyKnownCards = cards.every((card) => getCardById(card.cardId));
+  if (!spread || cards.length !== spread.cardCount || uniqueCards.size !== cards.length || !hasOnlyKnownCards) {
+    throw new Error('选牌结果无效，请重新开始抽牌。');
+  }
+
+  return persistDraw(spreadId, themeId, question, cards, aiDeckId, uiTheme);
+}
+
+function persistDraw(
+  spreadId: string,
+  themeId: ThemeId,
+  question: string,
+  cards: DrawnCard[],
+  aiDeckId?: AiDeckId,
+  uiTheme: UiThemeMode = 'auto',
+): DrawResult {
   const result: DrawResult = {
     id: generateId(),
     timestamp: Date.now(),

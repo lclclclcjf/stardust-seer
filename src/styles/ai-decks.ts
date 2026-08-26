@@ -7,6 +7,7 @@ export interface AiDeckConfig {
   faceImage: string;
   contentTone: 'light' | 'dark';
   labelTone: 'light' | 'dark';
+  numberTone: 'light' | 'dark';
 }
 
 export const AI_DECKS: readonly AiDeckConfig[] = [
@@ -16,6 +17,12 @@ export const AI_DECKS: readonly AiDeckConfig[] = [
   aiDeck('candy-planet', '糖果星球', 'dark', 'dark'),
   aiDeck('aurora-glacier', '极光冰川', 'dark', 'dark'),
   aiDeck('desert-meteor', '沙海流星', 'light', 'dark'),
+  aiDeck('moon-koi', '月影锦鲤', 'light', 'light'),
+  aiDeck('cloud-temple', '云上神殿', 'dark', 'dark'),
+  aiDeck('jade-river', '翡翠山河', 'dark', 'light', 'dark'),
+  aiDeck('sugar-crystal', '糖晶温室', 'dark', 'dark'),
+  aiDeck('solar-observatory', '日轮观星台', 'light', 'light'),
+  aiDeck('abyssal-pearl', '深海珍珠门', 'light', 'light'),
 ];
 
 export const DEFAULT_AI_DECK_ID: AiDeckId = AI_DECKS[0].id;
@@ -38,6 +45,7 @@ function aiDeck(
   nameZh: string,
   contentTone: AiDeckConfig['contentTone'],
   labelTone: AiDeckConfig['labelTone'],
+  numberTone: AiDeckConfig['numberTone'] = labelTone,
 ): AiDeckConfig {
   return {
     id,
@@ -46,5 +54,6 @@ function aiDeck(
     faceImage: `/card-assets/ai-${id}-card-face-v1.png`,
     contentTone,
     labelTone,
+    numberTone,
   };
 }

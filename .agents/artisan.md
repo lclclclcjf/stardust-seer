@@ -6,3 +6,6 @@
 - AI Free stores a concrete `AiDeckId` with each draw so its randomly selected back and face remain stable through shuffling, revealing, history, and retry navigation.
 - The draw page uses spread-specific card-width variables and label typography: three-card and ten-card layouts scale independently, while the page allows vertical overflow so enlarged multi-row spreads remain fully reachable.
 - UI light/dark mode is stored independently from the selected card-art theme on each draw; reading pages reuse the garden v2 background and the homepage form's 58% raised-surface glass treatment.
+- AI Free now contains twelve registered decks; each deck declares independent content, title, and number tones so artwork with mixed light and dark regions keeps dynamic overlays legible.
+- The history route uses its supplied garden artwork as a fixed full-viewport background; header, record, loading, and empty-state surfaces reuse the garden option cards' 58% raised color with 14px blur and 112% saturation.
+- The draw route uses a local reducer state machine; shuffled card identities remain ephemeral until the asker confirms a complete, unique selection, then the existing history persistence path is reused.

@@ -316,7 +316,7 @@
   border-radius: inherit;
   transform: translateZ(0);
   transform-style: preserve-3d;
-  transition: transform 900ms cubic-bezier(0.2, 0.78, 0.24, 1);
+  transition: transform 1250ms cubic-bezier(0.2, 0.78, 0.24, 1);
   will-change: transform;
 }
 
@@ -501,5 +501,406 @@
 
   .flipCard:not(.isRevealed):hover .flipInner {
     transform: none;
+  }
+}
+.modeStage {
+  display: grid;
+  width: min(100%, 48rem);
+  grid-template-columns: 12rem minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(2rem, 6vw, 5rem);
+  padding: 2rem;
+}
+
+.modeDeck {
+  width: 12rem;
+  aspect-ratio: 2 / 3;
+  filter: drop-shadow(0 24px 24px rgba(0, 0, 0, 0.38));
+  transform: rotate(-3deg);
+}
+
+.modeChoices {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.modeChoices button {
+  display: flex;
+  min-height: 5.75rem;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid rgba(240, 199, 181, 0.3);
+  border-radius: 1rem;
+  background: rgba(17, 39, 33, 0.66);
+  padding: 1rem 1.25rem;
+  color: #f4e8de;
+  cursor: pointer;
+  text-align: left;
+  backdrop-filter: blur(14px);
+  transition: transform 220ms cubic-bezier(0, 0, 0.2, 1), border-color 220ms ease;
+}
+
+.modeChoices button:hover {
+  transform: translateY(-3px);
+  border-color: rgba(241, 193, 171, 0.68);
+}
+
+.modeChoices strong {
+  font-family: Georgia, 'Songti SC', serif;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.modeChoices span {
+  margin-top: 0.42rem;
+  color: rgba(244, 226, 215, 0.58);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.selectionStage {
+  width: min(100%, 88rem);
+}
+
+.selectionTray {
+  display: grid;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 1.9rem;
+  justify-content: center;
+  gap: clamp(0.75rem, 1.5vw, 1.2rem);
+}
+
+.singleTray {
+  grid-template-columns: 7.5rem;
+}
+
+.threeTray {
+  grid-template-columns: repeat(3, 6.25rem);
+}
+
+.tenTray {
+  grid-template-columns: repeat(5, 4.25rem);
+  row-gap: 1.65rem;
+}
+
+.traySlot {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  padding: 0;
+  overflow: visible;
+  border: 1px dashed rgba(238, 198, 180, 0.4);
+  border-radius: 7% / 5%;
+  background: rgba(9, 30, 24, 0.44);
+  color: rgba(242, 218, 205, 0.56);
+  cursor: pointer;
+}
+
+.traySlot:disabled {
+  cursor: default;
+}
+
+.traySlot small {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  inset-inline: -0.35rem;
+  overflow: hidden;
+  color: rgba(244, 225, 214, 0.62);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trayFilled {
+  border-style: solid;
+  border-color: rgba(239, 190, 169, 0.68);
+  animation: tray-arrive 360ms cubic-bezier(0, 0, 0.2, 1) both;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.26);
+}
+
+.emptySlot {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+}
+
+.fanViewport {
+  width: 100%;
+  min-height: 18rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 1.8rem 0.75rem 2.8rem;
+  mask-image: linear-gradient(90deg, transparent, #000 2rem, #000 calc(100% - 2rem), transparent);
+  scrollbar-color: rgba(233, 191, 174, 0.36) transparent;
+  scrollbar-width: thin;
+}
+
+.fanRail {
+  display: flex;
+  width: max-content;
+  min-width: 100%;
+  align-items: flex-start;
+  justify-content: center;
+  padding-inline: max(2rem, calc(50vw - 6rem));
+}
+
+.fanCard {
+  --fan-angle: 0deg;
+  --fan-y: 0px;
+  position: relative;
+  z-index: var(--fan-order);
+  flex: 0 0 7.5rem;
+  width: 7.5rem;
+  aspect-ratio: 2 / 3;
+  margin-inline-start: -4.45rem;
+  padding: 0;
+  border: 0;
+  border-radius: 5% / 3.5%;
+  background: none;
+  cursor: pointer;
+  filter: drop-shadow(0 13px 10px rgba(0, 0, 0, 0.24));
+  transform: translateY(var(--fan-y)) rotate(var(--fan-angle));
+  transform-origin: 50% 118%;
+  transition: transform 240ms cubic-bezier(0, 0, 0.2, 1), filter 240ms ease, opacity 240ms ease;
+}
+
+.fanCard:first-child {
+  margin-inline-start: 0;
+}
+
+.fanCard:hover,
+.fanCard:focus-visible {
+  z-index: 100;
+  filter: drop-shadow(0 20px 16px rgba(0, 0, 0, 0.4));
+  transform: translateY(calc(var(--fan-y) - 1.35rem)) rotate(var(--fan-angle)) scale(1.025);
+}
+
+.fanCard:focus-visible,
+.modeChoices button:focus-visible,
+.traySlot:focus-visible,
+.primaryRitualButton:focus-visible,
+.secondaryRitualButton:focus-visible,
+.completeFooter button:focus-visible {
+  outline: 3px solid #efc4ad;
+  outline-offset: 4px;
+}
+
+.fanCardSelected {
+  opacity: 0.28;
+  transform: translateY(calc(var(--fan-y) - 1.75rem)) rotate(var(--fan-angle));
+}
+
+.fanCard:disabled {
+  cursor: default;
+}
+
+.selectedMark {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  border: 1px solid rgba(255, 239, 229, 0.7);
+  border-radius: 50%;
+  background: rgba(18, 49, 40, 0.82);
+  color: #fff4ec;
+  font-size: 1rem;
+  transform: translate(-50%, -50%);
+}
+
+.selectionActions {
+  display: flex;
+  width: min(100% - 2rem, 46rem);
+  min-height: 4.5rem;
+  margin: 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid rgba(244, 220, 207, 0.17);
+  padding-top: 1rem;
+}
+
+.selectionActions > p {
+  color: rgba(241, 222, 211, 0.62);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+.selectionActions > p strong {
+  margin-inline-start: 0.7rem;
+  color: #f1c3ad;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 0.86rem;
+}
+
+.selectionActions > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.7rem;
+}
+
+.primaryRitualButton,
+.secondaryRitualButton,
+.completeFooter button {
+  min-height: 44px;
+  border-radius: 999px;
+  padding: 0.65rem 1.1rem;
+  cursor: pointer;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  transition: transform 180ms cubic-bezier(0, 0, 0.2, 1), background-color 180ms ease;
+}
+
+.primaryRitualButton,
+.completeFooter button {
+  border: 1px solid #e6ad94;
+  background: #d28f73;
+  color: #1e110c;
+}
+
+.secondaryRitualButton {
+  border: 1px solid rgba(239, 196, 173, 0.42);
+  background: rgba(12, 34, 28, 0.66);
+  color: #f2ded2;
+}
+
+.primaryRitualButton:hover,
+.secondaryRitualButton:hover,
+.completeFooter button:hover {
+  transform: translateY(-2px);
+}
+
+.selectionError {
+  margin: 0.8rem auto 0;
+  color: #ffd2d2;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.flipHint {
+  position: absolute;
+  z-index: 3;
+  right: 50%;
+  bottom: 7%;
+  min-width: 4.6rem;
+  border: 1px solid rgba(255, 239, 229, 0.38);
+  border-radius: 999px;
+  background: rgba(8, 25, 21, 0.66);
+  padding: 0.38rem 0.58rem;
+  color: rgba(255, 242, 233, 0.9);
+  font-size: clamp(0.55rem, 0.8vw, 0.68rem);
+  letter-spacing: 0.08em;
+  pointer-events: none;
+  transform: translateX(50%) translateZ(2px);
+  backdrop-filter: blur(8px);
+}
+
+.completeFooter {
+  display: flex;
+  width: min(100% - 3rem, 38rem);
+  margin: 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.35rem 0 1.5rem;
+}
+
+.completeFooter p {
+  color: rgba(241, 222, 211, 0.62);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+}
+
+@keyframes tray-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(1.1rem) scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 760px) {
+  .modeStage {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0.5rem 0;
+  }
+
+  .modeDeck {
+    width: 8rem;
+    margin: 0 auto;
+  }
+
+  .selectionTray {
+    gap: 0.6rem;
+  }
+
+  .threeTray {
+    grid-template-columns: repeat(3, 5rem);
+  }
+
+  .tenTray {
+    grid-template-columns: repeat(5, 3.2rem);
+    gap: 1.35rem 0.48rem;
+  }
+
+  .fanViewport {
+    min-height: 16rem;
+    padding-top: 1rem;
+  }
+
+  .fanCard {
+    flex-basis: 6.5rem;
+    width: 6.5rem;
+    margin-inline-start: -3.5rem;
+  }
+
+  .selectionActions,
+  .completeFooter {
+    width: calc(100% - 1rem);
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .selectionActions > div {
+    justify-content: stretch;
+  }
+
+  .selectionActions button,
+  .completeFooter button {
+    flex: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modeChoices button,
+  .fanCard,
+  .primaryRitualButton,
+  .secondaryRitualButton,
+  .completeFooter button {
+    transition-duration: 1ms;
+  }
+
+  .trayFilled {
+    animation: none;
+  }
+
+  .fanCard:hover,
+  .fanCard:focus-visible,
+  .fanCardSelected {
+    transform: translateY(var(--fan-y)) rotate(var(--fan-angle));
   }
 }

@@ -90,12 +90,6 @@ export default function ReadingDisplay({
         )}
       </div>
 
-      {/* AI 解读预留区 */}
-      <div className="mt-4 pt-3 border-t border-dashed border-ink-100/50">
-        <p className="text-xs text-ink-200 italic">
-          🔮 AI 深度解读即将开放（根据你的问题生成个性化解读）
-        </p>
-      </div>
     </div>
   );
 }

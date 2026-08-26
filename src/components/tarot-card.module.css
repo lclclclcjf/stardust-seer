@@ -332,6 +332,11 @@
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.62);
 }
 
+.aiNumberDark .faceNumber {
+  color: #30383b;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.62);
+}
+
 .reverseSeal {
   position: absolute;
   z-index: 7;

@@ -63,7 +63,13 @@ export type AiDeckId =
   | 'deep-space'
   | 'candy-planet'
   | 'aurora-glacier'
-  | 'desert-meteor';
+  | 'desert-meteor'
+  | 'moon-koi'
+  | 'cloud-temple'
+  | 'jade-river'
+  | 'sugar-crystal'
+  | 'solar-observatory'
+  | 'abyssal-pearl';
 
 export type UiThemeMode = 'auto' | 'light' | 'dark';
 

@@ -51,6 +51,8 @@ export default function CardFace({
         className={`${styles.card} ${styles[size]} ${illustratedFace} ${
           aiDeck?.contentTone === 'dark' ? styles.aiContentDark : ''
         } ${aiDeck?.labelTone === 'dark' ? styles.aiLabelDark : ''} ${
+          aiDeck?.numberTone === 'dark' ? styles.aiNumberDark : ''
+        } ${
           isReversed ? styles.reversed : ''
         } ${className}`}
         style={aiDeck ? { backgroundImage: `url('${aiDeck.faceImage}')` } : undefined}
