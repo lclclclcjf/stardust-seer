@@ -52,6 +52,18 @@
 - [x] Vercel 自动部署中 🔄
 - [ ] ⚠️ 待用户操作：Vercel 环境变量配置（OPENAI_API_KEY 等）
 
+### 🌸 庭院体验升级（用户修改）
+- [x] **GardenIcon 图标系统** — 设置/历史页统一庭院风 SVG 图标
+- [x] **占卜音效** — `lib/ritual-sound.ts` 轻柔提示音（默认关闭）
+- [x] **历史删除撤销** — 删除后 7 秒内可撤销
+- [x] 设置页 CSS 模块化（`settings.module.css`）+ 主题适配
+- [x] **WebP 素材压缩** — 全部卡牌素材转换 WebP，加载更快
+- [x] 扇形选牌交互重构（`fan-interaction.ts` + 测试）
+- [x] TypeScript 零报错 ✅
+- [x] 生产构建通过（13 个路由）✅
+- [x] 推送到 GitHub ✅
+- [x] Vercel 自动部署中 🔄
+
 ### 🔗 线上地址
 - **主站**：https://stardust-seer.vercel.app/
 - **GitHub**：https://github.com/lclclclcjf/stardust-seer
