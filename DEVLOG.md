@@ -64,6 +64,13 @@
 - [x] 推送到 GitHub ✅
 - [x] Vercel 自动部署中 🔄
 
+### 🔑 Vercel AI 环境变量配置（用户确认）
+- [x] Vercel CLI 登录（lclclclcjf / GitHub）
+- [x] 项目关联 `lucy-ac68/stardust-seer`
+- [x] 添加 5 个生产环境变量：OPENAI_API_KEY / OPENAI_MODEL / AI_RATE_LIMIT_MAX / AI_RATE_LIMIT_WINDOW_SECONDS / AI_RATE_LIMIT_SALT
+- [x] 重新部署（39 秒完成）
+- [x] **线上 AI 解读验证通过** ✅（真实 API 测试返回 ok:true）
+
 ### 🔗 线上地址
 - **主站**：https://stardust-seer.vercel.app/
 - **GitHub**：https://github.com/lclclclcjf/stardust-seer
