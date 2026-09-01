@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useState, type ReactNode } from 'react';
+import { use, useEffect, useRef, useState, type ReactNode } from 'react';
 import { getAiReading } from '@/features/ai-reading/client';
 import type { AiReading, AiReadingRequest } from '@/features/ai-reading/schemas';
 import styles from './ai-reading-panel.module.css';
@@ -9,6 +9,40 @@ interface AiReadingPanelProps {
   request: AiReadingRequest;
   fallback: ReactNode;
   className?: string;
+}
+
+const SCRAMBLE_GLYPHS = Array.from('星月花雾镜潮山河光梦问象');
+
+function ScrambleText({ text }: { text: string }) {
+  const outputRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const output = outputRef.current;
+    if (!output || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const characters = Array.from(text);
+    const startedAt = performance.now();
+    let frameId = 0;
+
+    const renderFrame = (now: number) => {
+      const elapsed = now - startedAt;
+      let isComplete = true;
+      const cycle = Math.floor(elapsed / 56);
+      output.textContent = characters.map((character, index) => {
+        if (/\s/.test(character) || elapsed >= 360 + index * 150) return character;
+        isComplete = false;
+        return SCRAMBLE_GLYPHS[(cycle * cycle + cycle * 7 + index * 11) % SCRAMBLE_GLYPHS.length];
+      }).join('');
+
+      if (isComplete) output.textContent = text;
+      else frameId = requestAnimationFrame(renderFrame);
+    };
+
+    frameId = requestAnimationFrame(renderFrame);
+    return () => cancelAnimationFrame(frameId);
+  }, [text]);
+
+  return <span className={styles.scramble} aria-label={text}><span ref={outputRef} aria-hidden="true">{text}</span></span>;
 }
 
 export function AiReadingPanel({ request, fallback, className = '' }: AiReadingPanelProps) {
@@ -59,6 +93,7 @@ export function AiReadingLoading({ className = '' }: { className?: string }) {
       <div>
         <p className={styles.eyebrow}>AI 个性解读</p>
         <p className={styles.body}>庭院正在结合你的问题与这次牌面整理讯息…</p>
+        <ScrambleText text="正在解码牌阵与问题" />
       </div>
     </section>
   );

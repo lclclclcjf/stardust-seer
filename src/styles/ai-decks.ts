@@ -50,8 +50,8 @@ function aiDeck(
   return {
     id,
     nameZh,
-    backImage: `/card-assets/ai-${id}-card-back-v1.png`,
-    faceImage: `/card-assets/ai-${id}-card-face-v1.png`,
+    backImage: `/card-assets/ai-${id}-card-back-v1.webp`,
+    faceImage: `/card-assets/ai-${id}-card-face-v1.webp`,
     contentTone,
     labelTone,
     numberTone,

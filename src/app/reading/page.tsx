@@ -96,11 +96,11 @@ export default function ReadingPage({
       {/* 顶部 */}
       <header className="w-full max-w-lg mx-auto px-6 pt-6 pb-4">
         <div className="flex items-center justify-between">
-          <Link href={homeHref} className="text-ink-400 text-sm hover:text-ink-600 transition-colors">
+          <Link href={homeHref} className="inline-flex min-h-11 items-center text-ink-400 text-sm hover:text-ink-600 transition-colors">
             ← 返回首页
           </Link>
           <h1 className="text-lg font-bold text-ink-700">{spread.nameZh}</h1>
-          <Link href={retryHref} className="text-sakura-500 text-sm font-medium hover:text-sakura-600 transition-colors">
+          <Link href={retryHref} className="inline-flex min-h-11 items-center text-sakura-500 text-sm font-medium hover:text-sakura-600 transition-colors">
             再抽一次
           </Link>
         </div>
@@ -110,40 +110,42 @@ export default function ReadingPage({
         {/* 用户问题 */}
         {question && (
           <div className={`${styles.glassPanel} rounded-2xl px-5 py-3 border border-sakura-100`}>
-            <p className="text-xs text-ink-300 mb-1">你的问题</p>
-            <p className="text-sm text-ink-600">{question}</p>
+            <p className="text-sm text-ink-400 mb-1">你的问题</p>
+            <p className="text-base leading-relaxed text-ink-600">{question}</p>
           </div>
         )}
 
         {/* 抽取的牌面展示 */}
-        <div>
-          <h3 className="text-sm font-medium text-ink-500 mb-3 text-center">
+        <section aria-labelledby="drawn-cards-title">
+          <h2 id="drawn-cards-title" className="text-sm font-medium text-ink-500 mb-3 text-center">
             你的牌面
-          </h3>
-          <div className={`
-            grid gap-4 justify-items-center
-            ${spread.cardCount === 1 ? 'grid-cols-1' : ''}
-            ${spread.cardCount === 3 ? 'grid-cols-3' : ''}
-            ${spread.cardCount === 10 ? 'grid-cols-4' : ''}
-          `}>
-            {cards.map(({ card, position, isReversed }, i) => {
-              if (!card || !position) return null;
-              return (
-                <div key={i} className="flex flex-col items-center gap-1.5">
-                  <span className="text-xs text-ink-400">{position.nameZh}</span>
-                  <CardFace
-                    card={card}
-                    themeId={themeId}
-                    aiDeckId={aiDeckId}
-                    isReversed={isReversed}
-                    size={spread.cardCount >= 10 ? 'sm' : 'md'}
-                  />
-                </div>
-              );
-            })}
+          </h2>
+          <div className={styles.cardScroll}>
+            <div className={`${styles.cardGrid} ${
+              spread.cardCount === 1
+                ? styles.singleCards
+                : spread.cardCount === 3
+                  ? styles.threeCards
+                  : styles.tenCards
+            }`}>
+              {cards.map(({ card, position, isReversed }, i) => {
+                if (!card || !position) return null;
+                return (
+                  <div key={i} className={styles.cardItem}>
+                    <span className={styles.positionName}>{position.nameZh}</span>
+                    <CardFace
+                      card={card}
+                      themeId={themeId}
+                      aiDeckId={aiDeckId}
+                      isReversed={isReversed}
+                      size={spread.cardCount >= 10 ? 'sm' : 'md'}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-
+        </section>
         {aiRequest ? (
           <Suspense fallback={<AiReadingLoading className={styles.glassPanel} />}>
             <AiReadingPanel request={aiRequest} fallback={detailedReading} className={styles.glassPanel} />

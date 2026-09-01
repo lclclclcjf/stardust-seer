@@ -12,16 +12,19 @@ export function useLocalStorage<T>(
 ): [T, (value: T | ((prev: T) => T)) => void, () => void] {
   const [storedValue, setStoredValue] = useState<T>(initialValue);
 
-  // 初始化时从 localStorage 读取
+  // 初始化时从 localStorage 读取；延迟到当前 effect 之后，避免同步级联渲染。
   useEffect(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-      if (item !== null) {
-        setStoredValue(JSON.parse(item));
+    const timer = window.setTimeout(() => {
+      try {
+        const item = window.localStorage.getItem(key);
+        if (item !== null) {
+          setStoredValue(JSON.parse(item));
+        }
+      } catch {
+        // 数据损坏时保持初始值
       }
-    } catch {
-      // 数据损坏时保持初始值
-    }
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, [key]);
 
   const setValue = useCallback(

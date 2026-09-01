@@ -48,6 +48,8 @@
 }
 
 .eclipse {
+  --garden-hero-progress: 0;
+  --garden-reading-progress: 1;
   color-scheme: light;
   --radius: 12px;
   --bg: #dce3e7;
@@ -190,6 +192,10 @@
 .navLinks a:hover,
 .navLinks a:focus-visible {
   color: var(--text);
+}
+
+.mobileMenu {
+  display: none;
 }
 
 .themeSwitch {
@@ -494,7 +500,7 @@
 }
 
 .swatchsakura {
-  background-image: url('/card-assets/sakura-card-back-v3.png');
+  background-image: url('/card-assets/sakura-card-back-v3.webp');
   background-position: center;
   background-size: cover;
 }
@@ -517,7 +523,7 @@
 }
 
 .swatchclassic {
-  background-image: url('/card-assets/classic-card-back-v1.png');
+  background-image: url('/card-assets/classic-card-back-v1.webp');
   background-position: center;
   background-size: cover;
 }
@@ -745,7 +751,10 @@
 @media (prefers-reduced-transparency: reduce) {
   .garden .themeOption,
   .garden .spreadOption,
-  .garden .questionGroup textarea {
+  .garden .questionGroup textarea,
+  .eclipse .themeOption,
+  .eclipse .spreadOption,
+  .eclipse .questionGroup textarea {
     background: var(--raised);
     backdrop-filter: none;
   }
@@ -768,8 +777,31 @@
   pointer-events: none;
 }
 
+.eclipse .siteHeader {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 5;
+  width: 100%;
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--line) 52%, transparent);
+  backdrop-filter: blur(16px) saturate(112%);
+}
+
 .eclipse .hero {
-  grid-template-columns: minmax(0, 0.9fr) minmax(390px, 1.1fr);
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 100dvh;
+  margin: 0;
+  padding: 112px max(24px, calc((100vw - 1320px) / 2)) 56px;
+}
+
+.eclipse .heroCopy {
+  z-index: 4;
+  width: min(47vw, 610px);
+  max-width: none;
+  padding: clamp(28px, 4vw, 54px) 0;
 }
 
 .eclipse .heroTitle {
@@ -779,26 +811,85 @@
   letter-spacing: -0.075em;
 }
 
-.eclipse .heroVisual::before {
-  content: "";
-  position: absolute;
-  z-index: 2;
-  top: -20px;
-  right: -26px;
-  width: 44%;
-  aspect-ratio: 1;
-  border: 1px solid var(--accent);
-  border-radius: 50%;
-  opacity: 0.72;
+.eclipse .heroVisual {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  width: 100vw;
+  height: 100dvh;
+  background: var(--bg);
   pointer-events: none;
 }
 
+.eclipse .heroBlurImage,
+.eclipse .heroBlurPicture {
+  position: absolute;
+  inset: -36px;
+  z-index: 0;
+  width: calc(100% + 72px);
+  height: calc(100% + 72px);
+  object-fit: cover;
+  filter: blur(32px) saturate(0.88);
+  opacity: 0.82;
+  transform: scale(1.04);
+}
+
+.eclipse .heroBlurPicture .heroBlurImage {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: none;
+  opacity: 1;
+  transform: none;
+}
+
+.eclipse .heroVisual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--bg) 88%, transparent), color-mix(in srgb, var(--bg) 48%, transparent) 42%, transparent 72%),
+    linear-gradient(180deg, color-mix(in srgb, var(--bg) 12%, transparent), transparent 34%, transparent 72%, color-mix(in srgb, var(--bg) 18%, transparent));
+}
+
+.eclipse .heroImage {
+  position: absolute;
+  inset: 0;
+  border-radius: 0;
+  object-fit: contain;
+  object-position: center;
+  box-shadow: none;
+}
+
+.eclipse .imageFrame {
+  display: none;
+}
+
 .eclipse .readingSection {
-  background-image: linear-gradient(
-    120deg,
-    color-mix(in srgb, var(--accent) 6%, transparent),
-    transparent 38%
-  );
+  position: relative;
+  z-index: 3;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  scroll-margin-top: 92px;
+}
+
+.eclipse .themeOption,
+.eclipse .spreadOption,
+.eclipse .questionGroup textarea {
+  background: color-mix(in srgb, var(--raised) 58%, transparent);
+  backdrop-filter: blur(14px) saturate(112%);
+}
+
+.eclipse .choiceInput:checked + .themeOption,
+.eclipse .choiceInput:checked + .spreadOption {
+  background: color-mix(in srgb, var(--raised) 72%, transparent);
+}
+
+.eclipse .footer {
+  position: relative;
+  z-index: 3;
 }
 
 .theatre .siteHeader,
@@ -910,13 +1001,15 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .garden .heroCopy {
+  .garden .heroCopy,
+  .eclipse .heroCopy {
     animation: none;
     opacity: calc(1 - var(--garden-hero-progress));
     transform: translateY(calc(var(--garden-hero-progress) * -54px));
   }
 
-  .garden .readingSection {
+  .garden .readingSection,
+  .eclipse .readingSection {
     animation: none;
     opacity: calc(0.22 + var(--garden-reading-progress) * 0.78);
     transform: translateY(
@@ -928,7 +1021,11 @@
   .garden .sectionHeading,
   .garden .controlGroup,
   .garden .questionGroup,
-  .garden .submitButton {
+  .garden .submitButton,
+  .eclipse .sectionHeading,
+  .eclipse .controlGroup,
+  .eclipse .questionGroup,
+  .eclipse .submitButton {
     --reveal-start: 0.08;
     --item-progress: clamp(
       0,
@@ -940,15 +1037,18 @@
     transform: translateY(calc((1 - var(--item-progress)) * 28px));
   }
 
-  .garden .controlGroup {
+  .garden .controlGroup,
+  .eclipse .controlGroup {
     --reveal-start: 0.18;
   }
 
-  .garden .questionGroup {
+  .garden .questionGroup,
+  .eclipse .questionGroup {
     --reveal-start: 0.34;
   }
 
-  .garden .submitButton {
+  .garden .submitButton,
+  .eclipse .submitButton {
     --reveal-start: 0.46;
   }
 }
@@ -996,6 +1096,27 @@
     width: 100vw;
     height: 100dvh;
   }
+
+  .eclipse .hero {
+    display: flex;
+    min-height: 100dvh;
+    padding: 102px 24px 54px;
+  }
+
+  .eclipse .heroCopy {
+    width: min(68vw, 610px);
+  }
+
+  .eclipse .heroVisual {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+  }
+
+  .eclipse .heroImage {
+    object-fit: cover;
+  }
 }
 
 @media (max-width: 767px) {
@@ -1010,16 +1131,61 @@
   }
 
   .navLinks {
-    gap: 14px;
-  }
-
-  .navLinks > a:nth-child(2),
-  .navLinks > a:nth-child(3) {
     display: none;
   }
 
-  .themeSwitch {
-    padding: 7px 10px;
+  .mobileMenu {
+    position: relative;
+    display: block;
+  }
+
+  .mobileMenu summary {
+    display: grid;
+    min-width: 52px;
+    min-height: 44px;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 13px;
+    list-style: none;
+  }
+
+  .mobileMenu summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobileMenu > div {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    display: grid;
+    width: 168px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--raised) 90%, transparent);
+    box-shadow: 0 18px 42px var(--shadow);
+    backdrop-filter: blur(16px);
+  }
+
+  .mobileMenu a {
+    min-height: 44px;
+    padding: 13px 16px;
+    color: var(--text);
+    font-size: 14px;
+    text-decoration: none;
+  }
+
+  .mobileMenu a + a {
+    border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+  }
+
+  .mobileMenu summary:focus-visible,
+  .mobileMenu a:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--accent) 52%, transparent);
+    outline-offset: -3px;
   }
 
   .hero,
@@ -1107,6 +1273,22 @@
     padding: 92px 16px 44px;
   }
 
+  .eclipse .hero {
+    min-height: 100dvh;
+    padding: 92px 16px 44px;
+  }
+
+  .eclipse .heroCopy {
+    width: 100%;
+    padding: 24px 0;
+  }
+
+  .eclipse .heroVisual::after {
+    background:
+      linear-gradient(90deg, color-mix(in srgb, var(--bg) 94%, transparent), color-mix(in srgb, var(--bg) 72%, transparent) 56%, color-mix(in srgb, var(--bg) 18%, transparent)),
+      linear-gradient(180deg, color-mix(in srgb, var(--bg) 18%, transparent), transparent 30%, transparent 68%, color-mix(in srgb, var(--bg) 28%, transparent));
+  }
+
   .garden .heroCopy {
     width: 100%;
     padding: 24px 0;
@@ -1190,4 +1372,317 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Theatre opera stage v2 */
+.theatre {
+  --garden-hero-progress: 0;
+  --garden-reading-progress: 1;
+  --bg: #140d0f;
+  --surface: #f2e9de;
+  --raised: #fffaf2;
+  --text: #fff8eb;
+  --muted: #e7d5c1;
+  --line: #c9a979;
+  --accent: #c7a15f;
+  --accent-text: #1d1109;
+  --panel-text: #2c201c;
+  --panel-muted: #685a52;
+  --shadow: rgb(3 2 3 / 52%);
+}
+
+.theatre.dark {
+  --bg: #08090b;
+  --surface: #171316;
+  --raised: #251e20;
+  --text: #fff8eb;
+  --muted: #d9c9bb;
+  --line: #6d5848;
+  --accent: #d7b373;
+  --panel-text: #fff8eb;
+  --panel-muted: #d9c9bb;
+}
+
+@media (prefers-color-scheme: dark) {
+  .theatre.auto {
+    --bg: #08090b;
+    --surface: #171316;
+    --raised: #251e20;
+    --text: #fff8eb;
+    --muted: #d9c9bb;
+    --line: #6d5848;
+    --accent: #d7b373;
+    --panel-text: #fff8eb;
+    --panel-muted: #d9c9bb;
+  }
+}
+
+.theatre .siteHeader {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 5;
+  width: 100%;
+  border-color: rgb(241 219 187 / 22%);
+  background: rgb(12 8 10 / 68%);
+  box-shadow: 0 1px 0 rgb(255 238 211 / 10%);
+  backdrop-filter: blur(16px) saturate(112%);
+}
+
+.theatre .hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 100dvh;
+  margin: 0;
+  padding: 112px max(24px, calc((100vw - 1320px) / 2)) 56px;
+}
+
+.theatre .heroCopy {
+  z-index: 4;
+  align-self: center;
+  width: min(42vw, 570px);
+  max-width: none;
+  margin-inline-start: auto;
+  margin-inline-end: clamp(32px, 8vw, 132px);
+  padding: clamp(28px, 4vw, 54px) 0;
+  text-shadow: 0 2px 24px rgb(0 0 0 / 62%);
+}
+
+.theatre.dark .heroCopy {
+  margin-inline-start: clamp(32px, 8vw, 132px);
+  margin-inline-end: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+  .theatre.auto .heroCopy {
+    margin-inline-start: clamp(32px, 8vw, 132px);
+    margin-inline-end: auto;
+  }
+}
+
+.theatre .heroTitle {
+  font-family: "Songti SC", "Noto Serif SC", STSong, serif;
+  font-size: clamp(3.35rem, 6.4vw, 6.35rem);
+  font-weight: 700;
+  letter-spacing: -0.065em;
+  line-height: 0.92;
+}
+
+.theatre .heroVisual {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  width: 100vw;
+  height: 100dvh;
+  background: var(--bg);
+  transform: none;
+  pointer-events: none;
+}
+
+.theatre .heroVisual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    linear-gradient(270deg, rgb(37 20 13 / 76%) 0%, rgb(33 18 12 / 50%) 42%, rgb(22 12 8 / 6%) 72%),
+    linear-gradient(180deg, rgb(2 2 3 / 25%), transparent 30%, transparent 70%, rgb(2 2 3 / 34%));
+}
+
+.theatre.dark .heroVisual::after {
+  background:
+    linear-gradient(90deg, rgb(4 3 5 / 74%) 0%, rgb(5 4 6 / 54%) 42%, rgb(4 3 5 / 8%) 72%),
+    linear-gradient(180deg, rgb(2 2 3 / 25%), transparent 30%, transparent 70%, rgb(2 2 3 / 34%));
+}
+
+@media (prefers-color-scheme: dark) {
+  .theatre.auto .heroVisual::after {
+    background:
+      linear-gradient(90deg, rgb(4 3 5 / 74%) 0%, rgb(5 4 6 / 54%) 42%, rgb(4 3 5 / 8%) 72%),
+      linear-gradient(180deg, rgb(2 2 3 / 25%), transparent 30%, transparent 70%, rgb(2 2 3 / 34%));
+  }
+}
+
+.theatre .heroImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  object-fit: cover;
+  object-position: center;
+  box-shadow: none;
+}
+
+.theatre .imageFrame {
+  display: none;
+}
+
+.theatre .secondaryAction {
+  border-color: rgb(255 240 217 / 54%);
+  color: var(--text);
+}
+
+.theatre .readingSection {
+  position: relative;
+  z-index: 3;
+  width: min(100% - 48px, 1320px);
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  scroll-margin-top: 92px;
+}
+
+.theatre .themeOption,
+.theatre .spreadOption,
+.theatre .questionGroup textarea {
+  background: color-mix(in srgb, var(--raised) 58%, transparent);
+  backdrop-filter: blur(14px) saturate(112%);
+}
+
+.theatre .choiceInput:checked + .themeOption,
+.theatre .choiceInput:checked + .spreadOption {
+  background: color-mix(in srgb, var(--raised) 72%, transparent);
+}
+
+.theatre .footer {
+  position: relative;
+  z-index: 3;
+  border-color: rgb(241 219 187 / 22%);
+  background: rgb(12 8 10 / 72%);
+  backdrop-filter: blur(16px);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .theatre .themeOption,
+  .theatre .spreadOption,
+  .theatre .questionGroup textarea {
+    background: var(--raised);
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .theatre .heroVisual {
+    animation: none;
+  }
+
+  .theatre .heroCopy {
+    animation: none;
+    opacity: calc(1 - var(--garden-hero-progress));
+    transform: translateY(calc(var(--garden-hero-progress) * -54px));
+  }
+
+  .theatre .readingSection {
+    animation: none;
+    opacity: calc(0.22 + var(--garden-reading-progress) * 0.78);
+    transform: translateY(calc((1 - var(--garden-reading-progress)) * 64px))
+      scale(calc(0.985 + var(--garden-reading-progress) * 0.015));
+  }
+
+  .theatre .sectionHeading,
+  .theatre .controlGroup,
+  .theatre .questionGroup,
+  .theatre .submitButton {
+    --reveal-start: 0.08;
+    --item-progress: clamp(0, calc((var(--garden-reading-progress) - var(--reveal-start)) * 2.3), 1);
+    animation: none;
+    opacity: var(--item-progress);
+    transform: translateY(calc((1 - var(--item-progress)) * 28px));
+  }
+
+  .theatre .controlGroup {
+    --reveal-start: 0.18;
+  }
+
+  .theatre .questionGroup {
+    --reveal-start: 0.34;
+  }
+
+  .theatre .submitButton {
+    --reveal-start: 0.46;
+  }
+}
+
+@media (max-width: 900px) {
+  .theatre .hero {
+    display: flex;
+    min-height: 100dvh;
+    padding: 102px 24px 54px;
+  }
+
+  .theatre .heroCopy {
+    width: min(74vw, 600px);
+    margin-inline-start: auto;
+    margin-inline-end: 0;
+    padding: 24px 0;
+  }
+
+  .theatre.dark .heroCopy {
+    margin-inline-start: 0;
+    margin-inline-end: auto;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .theatre.auto .heroCopy {
+      margin-inline-start: 0;
+      margin-inline-end: auto;
+    }
+  }
+
+  .theatre .heroVisual {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+  }
+}
+
+@media (max-width: 767px) {
+  .theatre .hero {
+    width: 100%;
+    min-height: 100dvh;
+    padding: 92px 16px 44px;
+  }
+
+  .theatre .heroCopy {
+    width: 100%;
+  }
+
+  .theatre .heroImage {
+    border: 0;
+    object-position: 58% center;
+    box-shadow: none;
+  }
+
+  .theatre .heroVisual::after {
+    background:
+      linear-gradient(90deg, rgb(4 3 5 / 82%) 0%, rgb(5 4 6 / 66%) 58%, rgb(4 3 5 / 22%) 100%),
+      linear-gradient(180deg, rgb(2 2 3 / 34%), transparent 26%, transparent 68%, rgb(2 2 3 / 46%));
+  }
+
+  .theatre .readingSection {
+    margin: 30px auto 72px;
+    box-shadow: none;
+  }
+
+  .theatre .mobileMenu > div {
+    border-color: rgb(241 219 187 / 24%);
+    background: rgb(17 12 14 / 94%);
+  }
+}
+
+.theatre .sectionHeading h2,
+.theatre .controlGroup legend,
+.theatre .questionGroup > label {
+  color: var(--text);
+  text-shadow: 0 2px 18px rgb(0 0 0 / 68%);
+}
+
+.theatre .sectionHeading p,
+.theatre .questionGroup > p {
+  color: var(--muted);
+  text-shadow: 0 2px 18px rgb(0 0 0 / 68%);
 }

@@ -23,7 +23,7 @@
 
 .page::before {
   z-index: -2;
-  background: url("/demo-assets/history-garden.png") center / cover no-repeat;
+  background: url("/demo-assets/history-garden-v2.webp") center / cover no-repeat;
 }
 
 .page::after {
@@ -62,7 +62,7 @@
 .headerSpacer {
   display: inline-flex;
   min-width: 74px;
-  min-height: 40px;
+  min-height: 44px;
   align-items: center;
 }
 
@@ -143,14 +143,22 @@
 
 .themeIcon {
   display: grid;
-  flex: 0 0 42px;
-  width: 42px;
-  height: 42px;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
   place-items: center;
   border: 1px solid rgb(173 71 100 / 24%);
   border-radius: 13px;
   background: rgb(255 255 255 / 34%);
-  font-size: 20px;
+  color: var(--history-accent);
+}
+
+.themeIcon svg {
+  width: 23px;
+  height: 23px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
 }
 
 .cardIdentity h2 {
@@ -163,7 +171,7 @@
 .question,
 .emptyState p {
   color: var(--history-muted);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .cardIdentity p {
@@ -176,9 +184,12 @@
 
 .question {
   margin-top: 13px;
+  display: -webkit-box;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-height: 1.55;
 }
 
 .deleteButton {
@@ -186,16 +197,23 @@
   top: 13px;
   right: 12px;
   display: grid;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   place-items: center;
   border: 0;
   border-radius: 50%;
   background: transparent;
   color: #7b8780;
   cursor: pointer;
-  font-size: 20px;
   transition: color 180ms ease, background-color 180ms ease;
+}
+
+.deleteButton svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
 }
 
 .deleteButton:hover {
@@ -226,7 +244,12 @@
   display: block;
   margin-bottom: 14px;
   color: var(--history-accent);
-  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  margin-inline: auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.35;
 }
 
 .emptyState h2 {
@@ -312,4 +335,46 @@
   .startLink {
     transition: none;
   }
+}
+
+.undoBar {
+  position: fixed;
+  right: 50%;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  z-index: 5;
+  display: flex;
+  min-width: min(320px, calc(100vw - 32px));
+  min-height: 52px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border: 1px solid color-mix(in srgb, var(--history-line) 72%, transparent);
+  border-radius: 16px;
+  background: color-mix(in srgb, #26342e 92%, transparent);
+  padding: 8px 10px 8px 16px;
+  box-shadow: 0 18px 46px rgb(20 30 25 / 28%);
+  color: #fffdfb;
+  transform: translateX(50%);
+  backdrop-filter: blur(12px);
+}
+
+.undoBar span {
+  font-size: 14px;
+}
+
+.undoBar button {
+  min-width: 64px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 11px;
+  background: rgb(255 255 255 / 12%);
+  color: #ffd6df;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.undoBar button:focus-visible {
+  outline: 3px solid rgb(255 193 207 / 72%);
+  outline-offset: 2px;
 }

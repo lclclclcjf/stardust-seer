@@ -27,8 +27,8 @@ const DEMOS: Record<DemoVariant, DemoConfig> = {
     eyebrow: "樱雾庭院",
     title: ["在花落之前", "问问内心"],
     intro: "选一副牌阵，把此刻最真实的问题交给直觉。",
-    image: "/demo-assets/sakura-garden-hero-light-v2.png",
-    darkImage: "/demo-assets/sakura-garden-hero-dark-v2.png",
+    image: "/demo-assets/sakura-garden-hero-light-v3.webp",
+    darkImage: "/demo-assets/sakura-garden-hero-dark-v3.webp",
     imageAlt: "樱花、石灯笼、水钵与塔罗牌组成的静谧庭院",
     defaultCardTheme: "sakura",
   },
@@ -37,8 +37,9 @@ const DEMOS: Record<DemoVariant, DemoConfig> = {
     eyebrow: "月蚀档案",
     title: ["让未知", "显出轮廓"],
     intro: "从纷乱中抽出一条线索，读懂此刻正在形成的方向。",
-    image: "/demo-assets/lunar-archive.png",
-    imageAlt: "黑色月相塔罗牌与银色日蚀环组成的静物",
+    image: "/demo-assets/eclipse-archive-hero-light-v2.png",
+    darkImage: "/demo-assets/eclipse-archive-hero-dark-v1.png",
+    imageAlt: "月相塔罗牌、星座轨道与月牙组成的月蚀档案",
     defaultCardTheme: "classic",
   },
   theatre: {
@@ -46,8 +47,9 @@ const DEMOS: Record<DemoVariant, DemoConfig> = {
     eyebrow: "花札剧场",
     title: ["抽一张牌", "改变镜头"],
     intro: "把问题放到台前，让牌面替你换一个观看角度。",
-    image: "/demo-assets/hana-theatre.png",
-    imageAlt: "蓝色背景中的纸艺樱花与两张白色塔罗牌",
+    image: "/demo-assets/hana-theatre-opera-light-v3.png",
+    darkImage: "/demo-assets/hana-theatre-opera-dark-v3.png",
+    imageAlt: "红幕、罗马柱、戏剧面具与飘落塔罗牌组成的欧式花札剧场",
     defaultCardTheme: "ai",
   },
 };
@@ -85,7 +87,7 @@ export default function TarotDemo({
     themeMode === "dark" && demo.darkImage ? demo.darkImage : demo.image;
 
   useEffect(() => {
-    if (variant !== "garden") return;
+    if (variant !== "garden" && variant !== "eclipse" && variant !== "theatre") return;
 
     const root = demoRef.current;
     const hero = root?.querySelector<HTMLElement>("main > section");
@@ -153,9 +155,9 @@ export default function TarotDemo({
             樱花塔罗
           </Link>
           <div className={styles.navLinks}>
-            <Link href="/demos">设计总览</Link>
+            <Link href="/demos">更多主题</Link>
             <Link href="/history">历史</Link>
-            <Link href="/settings">设置</Link>
+            <Link href={`/settings?theme=${themeMode}`}>设置</Link>
             <Link
               className={styles.themeSwitch}
               href={`${pageRoute}?theme=${nextTheme}`}
@@ -164,6 +166,17 @@ export default function TarotDemo({
               {themeLabel}
             </Link>
           </div>
+          <details className={styles.mobileMenu}>
+            <summary aria-label="打开主导航菜单">菜单</summary>
+            <div>
+              <Link href="/demos">更多主题</Link>
+              <Link href="/history">历史</Link>
+              <Link href={`/settings?theme=${themeMode}`}>设置</Link>
+              <Link href={`${pageRoute}?theme=${nextTheme}`} rel="nofollow">
+                {themeLabel}
+              </Link>
+            </div>
+          </details>
         </nav>
       </header>
 
@@ -181,12 +194,37 @@ export default function TarotDemo({
                 开始提问
               </a>
               <Link className={styles.secondaryAction} href={isProduction ? "/history" : "/demos"}>
-                {isProduction ? "查看历史" : "查看其他方案"}
+                {isProduction ? "查看历史" : "查看更多主题"}
               </Link>
             </div>
           </div>
 
           <div className={styles.heroVisual}>
+            {variant === "eclipse" &&
+              (themeMode === "auto" && demo.darkImage ? (
+                <picture
+                  className={`${styles.heroPicture} ${styles.heroBlurPicture}`}
+                >
+                  <source media="(prefers-color-scheme: dark)" srcSet={demo.darkImage} />
+                  <Image
+                    className={styles.heroBlurImage}
+                    src={demo.image}
+                    alt=""
+                    width={2560}
+                    height={1440}
+                    sizes="100vw"
+                  />
+                </picture>
+              ) : (
+                <Image
+                  className={styles.heroBlurImage}
+                  src={activeImage}
+                  alt=""
+                  width={2560}
+                  height={1440}
+                  sizes="100vw"
+                />
+              ))}
             {themeMode === "auto" && demo.darkImage ? (
               <picture className={styles.heroPicture}>
                 <source
@@ -199,8 +237,8 @@ export default function TarotDemo({
                   alt={demo.imageAlt}
                   width={2560}
                   height={1440}
-                  sizes={variant === "garden" ? "100vw" : "(max-width: 767px) 92vw, 48vw"}
-                  loading="eager"
+                  sizes="100vw"
+                  fetchPriority="high"
                 />
               </picture>
             ) : (
@@ -208,10 +246,10 @@ export default function TarotDemo({
                 className={styles.heroImage}
                 src={activeImage}
                 alt={demo.imageAlt}
-                width={variant === "garden" ? 2560 : 1120}
-                height={variant === "garden" ? 1440 : 1400}
-                sizes={variant === "garden" ? "100vw" : "(max-width: 767px) 92vw, 48vw"}
-                loading="eager"
+                width={variant === "theatre" ? 1672 : 2560}
+                height={variant === "theatre" ? 941 : 1440}
+                sizes="100vw"
+                fetchPriority="high"
               />
             )}
             <div className={styles.imageFrame} aria-hidden="true" />
@@ -255,8 +293,7 @@ export default function TarotDemo({
                     >
                       <span
                         className={`${styles.themeSwatch} ${styles[`swatch${theme.value}`]}`}
-                        aria-hidden="true"
-                      />
+                            />
                       <span>
                         <strong>{theme.name}</strong>
                         <small>{theme.detail}</small>
@@ -320,7 +357,7 @@ export default function TarotDemo({
       <footer className={styles.footer}>
         <p>{isProduction ? "樱雾庭院 · 樱花塔罗" : "樱花塔罗设计实验"}</p>
         <Link href={isProduction ? "#top" : "/demos"}>
-          {isProduction ? "返回庭院" : "返回三个方案"}
+          {isProduction ? "返回庭院" : "返回更多主题"}
         </Link>
       </footer>
     </div>

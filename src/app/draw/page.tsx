@@ -1,7 +1,7 @@
 'use client';
 
-import { use, useEffect, useReducer, useRef } from 'react';
-import type { CSSProperties, TransitionEvent } from 'react';
+import { use, useEffect, useReducer, useRef, useState } from 'react';
+import type { CSSProperties, KeyboardEvent, PointerEvent, TransitionEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import type { DrawnCard, ThemeId } from '@/types';
 import { parseAiDeckId } from '@/styles/ai-decks';
@@ -10,8 +10,10 @@ import { getSpreadById } from '@/data/spreads';
 import { allCards, getCardById } from '@/data/cards';
 import { randomReversed, shuffle } from '@/lib/shuffle';
 import { performSelectedDraw } from '@/hooks/useTarot';
+import { playRitualSound } from '@/lib/ritual-sound';
 import CardBack from '@/components/CardBack';
 import CardFace from '@/components/CardFace';
+import { classifyFanGesture } from './fan-interaction';
 import { initialRitualState, ritualReducer } from './ritual-state';
 import styles from './draw.module.css';
 
@@ -19,6 +21,13 @@ type FanCardStyle = CSSProperties & {
   '--fan-angle': string;
   '--fan-y': string;
   '--fan-order': number;
+};
+
+type FanGestureStart = {
+  index: number;
+  pointerId: number;
+  x: number;
+  y: number;
 };
 
 export default function DrawPage({
@@ -29,6 +38,10 @@ export default function DrawPage({
   const params = use(searchParams);
   const router = useRouter();
   const fanViewportRef = useRef<HTMLDivElement>(null);
+  const fanCardRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const fanGestureRef = useRef<FanGestureStart | null>(null);
+  const suppressNextClickRef = useRef(false);
+  const [previewedIndex, setPreviewedIndex] = useState<number | null>(null);
   const spreadId = (params.spread as string) || 'single';
   const themeId = (params.theme as ThemeId) || 'sakura';
   const aiDeckId = parseAiDeckId(params.aiDeck);
@@ -105,20 +118,127 @@ export default function DrawPage({
   const cardSize = spread.cardCount === 1 ? 'lg' : spread.cardCount === 3 ? 'md' : 'sm';
   const isChoosing = ['selecting', 'auto-selecting', 'ready'].includes(state.phase);
   const isReading = state.phase === 'revealing' || state.phase === 'complete';
+  const firstSelectableIndex = state.selected.length >= spread.cardCount
+    ? -1
+    : state.deck.findIndex((_, index) => !selectedDeckIndices.has(index));
+  const fanTabStop = previewedIndex
+    ?? (firstSelectableIndex >= 0 ? firstSelectableIndex : (state.selected[0]?.deckIndex ?? 0));
+
+  const focusFanCard = (index: number) => {
+    fanCardRefs.current[index]?.focus();
+  };
+
+  const findNextFanCard = (index: number, step: -1 | 1) => {
+    const length = state.deck.length;
+    for (let attempts = 1; attempts <= length; attempts += 1) {
+      const target = (index + step * attempts + length) % length;
+      const candidate = fanCardRefs.current[target];
+      if (candidate && !candidate.disabled && !selectedDeckIndices.has(target)) return target;
+    }
+    return null;
+  };
+
+  const previewFanCard = (index: number) => {
+    const candidate = fanCardRefs.current[index];
+    if (!candidate || candidate.disabled || selectedDeckIndices.has(index)) return;
+    setPreviewedIndex(index);
+    focusFanCard(index);
+  };
+
+  const moveFanCard = (index: number, step: -1 | 1, keepPreviewed: boolean) => {
+    const target = findNextFanCard(index, step);
+    if (target === null) return;
+    if (keepPreviewed) setPreviewedIndex(target);
+    focusFanCard(target);
+  };
 
   const handleDeckChoice = (deckIndex: number) => {
     if (state.phase !== 'selecting' && state.phase !== 'ready') return;
+    setPreviewedIndex(null);
     if (selectedDeckIndices.has(deckIndex)) {
       dispatch({ type: 'REMOVE_CARD', deckIndex });
       return;
     }
     const cardId = state.deck[deckIndex];
     if (!cardId || state.selected.length >= spread.cardCount) return;
+    playRitualSound('select');
     dispatch({
       type: 'SELECT_CARD',
       required: spread.cardCount,
       card: { deckIndex, cardId, isReversed: randomReversed() },
     });
+  };
+
+  const handleFanKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      previewFanCard(index);
+      return;
+    }
+    if (event.key === 'ArrowDown' && previewedIndex !== null) {
+      event.preventDefault();
+      setPreviewedIndex(null);
+      return;
+    }
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      event.preventDefault();
+      moveFanCard(index, event.key === 'ArrowLeft' ? -1 : 1, previewedIndex !== null);
+      return;
+    }
+    if (event.key === 'Home' || event.key === 'End') {
+      event.preventDefault();
+      const boundary = event.key === 'Home' ? -1 : state.deck.length;
+      moveFanCard(boundary, event.key === 'Home' ? 1 : -1, previewedIndex !== null);
+      return;
+    }
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      if (selectedDeckIndices.has(index) || previewedIndex === index) handleDeckChoice(index);
+      else previewFanCard(index);
+    }
+  };
+
+  const suppressNextFanClick = () => {
+    suppressNextClickRef.current = true;
+    window.requestAnimationFrame(() => { suppressNextClickRef.current = false; });
+  };
+
+  const handleFanPointerDown = (event: PointerEvent<HTMLButtonElement>, index: number) => {
+    if (event.pointerType === 'mouse') return;
+    fanGestureRef.current = {
+      index,
+      pointerId: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+    };
+  };
+
+  const handleFanPointerUp = (event: PointerEvent<HTMLButtonElement>, index: number) => {
+    const start = fanGestureRef.current;
+    fanGestureRef.current = null;
+    if (!start || start.pointerId !== event.pointerId || start.index !== index) return;
+    const deltaX = event.clientX - start.x;
+    const deltaY = event.clientY - start.y;
+    const gesture = classifyFanGesture(deltaX, deltaY, previewedIndex !== null);
+    if (gesture === 'lift') {
+      event.preventDefault();
+      suppressNextFanClick();
+      previewFanCard(index);
+      return;
+    }
+    if ((gesture === 'next' || gesture === 'previous') && previewedIndex !== null) {
+      event.preventDefault();
+      suppressNextFanClick();
+      moveFanCard(previewedIndex, gesture === 'next' ? 1 : -1, true);
+    }
+  };
+
+  const handleFanClick = (index: number) => {
+    if (suppressNextClickRef.current) {
+      suppressNextClickRef.current = false;
+      return;
+    }
+    handleDeckChoice(index);
   };
 
   const handleConfirmSelection = () => {
@@ -139,7 +259,9 @@ export default function DrawPage({
   };
 
   const handleFlipEnd = (event: TransitionEvent<HTMLSpanElement>, index: number) => {
-    if (event.propertyName === 'transform') dispatch({ type: 'FLIP_END', index });
+    if (event.propertyName !== 'transform') return;
+    playRitualSound(revealedCount === spread.cardCount - 1 ? 'complete' : 'flip');
+    dispatch({ type: 'FLIP_END', index });
   };
 
   let status = '静候牌组回应你的问题';
@@ -231,12 +353,21 @@ export default function DrawPage({
               })}
             </div>
 
+            <p id="fan-instructions" className={styles.fanInstructions}>
+              键盘：↑ 抽出、← → 换牌、↓ 放回、Enter 选择；手机：上滑抽出、左右滑换牌、点击选择。
+            </p>
             <div ref={fanViewportRef} className={styles.fanViewport}>
-              <div className={styles.fanRail} role="group" aria-label="可选择的塔罗牌">
+              <div
+                className={styles.fanRail}
+                role="group"
+                aria-label="可选择的塔罗牌"
+                aria-describedby="fan-instructions fan-preview-status selection-progress"
+              >
                 {state.deck.map((cardId, index) => {
                   const center = (state.deck.length - 1) / 2;
                   const normalized = center === 0 ? 0 : (index - center) / center;
                   const isSelected = selectedDeckIndices.has(index);
+                  const isPreviewed = previewedIndex === index;
                   const fanStyle: FanCardStyle = {
                     '--fan-angle': `${normalized * 7}deg`,
                     '--fan-y': `${Math.abs(normalized) * 24}px`,
@@ -245,13 +376,29 @@ export default function DrawPage({
                   return (
                     <button
                       key={cardId}
+                      ref={(node) => {
+                        fanCardRefs.current[index] = node;
+                        return () => {
+                          fanCardRefs.current[index] = null;
+                        };
+                      }}
                       type="button"
                       style={fanStyle}
-                      className={`${styles.fanCard} ${isSelected ? styles.fanCardSelected : ''}`}
-                      onClick={() => handleDeckChoice(index)}
+                      tabIndex={index === fanTabStop ? 0 : -1}
+                      onKeyDown={(event) => handleFanKeyDown(event, index)}
+                      className={`${styles.fanCard} ${isSelected ? styles.fanCardSelected : ''} ${isPreviewed ? styles.fanCardPreviewed : ''}`}
+                      onClick={() => handleFanClick(index)}
+                      onPointerDown={(event) => handleFanPointerDown(event, index)}
+                      onPointerUp={(event) => handleFanPointerUp(event, index)}
+                      onPointerCancel={() => { fanGestureRef.current = null; }}
                       disabled={state.phase === 'auto-selecting' || (!isSelected && state.selected.length >= spread.cardCount)}
                       aria-pressed={isSelected}
-                      aria-label={isSelected ? `撤回第 ${index + 1} 张候选牌` : `选择第 ${index + 1} 张候选牌`}
+                      aria-current={isPreviewed ? 'true' : undefined}
+                      aria-label={isSelected
+                        ? `撤回第 ${index + 1} 张候选牌`
+                        : isPreviewed
+                          ? `第 ${index + 1} 张候选牌已抽出，按 Enter 选择`
+                          : `第 ${index + 1} 张候选牌，按上方向键抽出`}
                     >
                       <CardBack themeId={themeId} aiDeckId={aiDeckId} size="sm" className={styles.fillCard} />
                       {isSelected && <span className={styles.selectedMark} aria-hidden="true">✓</span>}
@@ -260,9 +407,14 @@ export default function DrawPage({
                 })}
               </div>
             </div>
+            <p id="fan-preview-status" className={styles.fanPreviewStatus} aria-live="polite" aria-atomic="true">
+              {previewedIndex === null
+                ? '还没有抽出候选牌'
+                : `第 ${previewedIndex + 1} 张牌已抽出，左右切换，按 Enter 或点击选择`}
+            </p>
 
             <div className={styles.selectionActions}>
-              <p>
+              <p id="selection-progress" aria-live="polite" aria-atomic="true">
                 {state.phase === 'auto-selecting' ? '自动选牌中' : '已选择'}
                 <strong>{state.selected.length} / {spread.cardCount}</strong>
               </p>

@@ -1,0 +1,323 @@
+.light {
+  color-scheme: light;
+}
+
+.page {
+  --settings-bg: #edf0ec;
+  --settings-raised: #ffffff;
+  --settings-text: #26362f;
+  --settings-muted: #5e6d66;
+  --settings-line: #c9d0cc;
+  --settings-accent: #b74767;
+  position: relative;
+  min-height: 100svh;
+  overflow-x: hidden;
+  isolation: isolate;
+  padding: 24px 20px 64px;
+  background: var(--settings-bg);
+  color: var(--settings-text);
+}
+
+.page::before,
+.page::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+}
+
+.page::before {
+  background: center / cover no-repeat url('/demo-assets/sakura-garden-hero-light-v3.webp');
+}
+
+.page::after {
+  z-index: -1;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--settings-bg) 92%, transparent), color-mix(in srgb, var(--settings-bg) 58%, transparent));
+}
+
+.dark {
+  --settings-bg: #111916;
+  --settings-raised: #1d2b25;
+  --settings-text: #f2f4f1;
+  --settings-muted: #b8c5be;
+  --settings-line: #34463c;
+  --settings-accent: #e1849c;
+  color-scheme: dark;
+}
+
+.dark::before {
+  background-image: url('/demo-assets/sakura-garden-hero-dark-v3.webp');
+}
+
+.header,
+.main {
+  width: min(100%, 620px);
+  margin-inline: auto;
+}
+
+.header {
+  position: sticky;
+  top: 16px;
+  z-index: 4;
+  display: grid;
+  min-height: 64px;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  border: 1px solid color-mix(in srgb, var(--settings-line) 74%, transparent);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--settings-raised) 68%, transparent);
+  padding: 8px 14px;
+  box-shadow: 0 18px 48px rgb(35 45 40 / 14%);
+  backdrop-filter: blur(14px) saturate(112%);
+}
+
+.header a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: var(--settings-muted);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.header h1 {
+  font-family: Georgia, 'Songti SC', serif;
+  font-size: 19px;
+  letter-spacing: 0.12em;
+}
+
+.main {
+  display: grid;
+  gap: 14px;
+  padding-top: 24px;
+}
+
+.settingCard {
+  display: grid;
+  min-height: 112px;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid color-mix(in srgb, var(--settings-line) 74%, transparent);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--settings-raised) 58%, transparent);
+  padding: 18px;
+  box-shadow: 0 18px 48px rgb(35 45 40 / 13%);
+  backdrop-filter: blur(14px) saturate(112%);
+}
+
+.icon {
+  width: 28px;
+  height: 28px;
+  justify-self: center;
+  color: var(--settings-accent);
+  stroke: currentColor;
+  stroke-width: 1.45;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.settingCopy {
+  min-width: 0;
+}
+
+.settingCopy h2 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.settingCopy p {
+  margin-top: 6px;
+  color: var(--settings-muted);
+  font-size: 14px;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+.switch {
+  display: grid;
+  min-width: 72px;
+  min-height: 48px;
+  place-items: center;
+  gap: 3px;
+  border: 0;
+  background: transparent;
+  color: var(--settings-muted);
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.switchTrack {
+  position: relative;
+  display: block;
+  width: 48px;
+  height: 28px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--settings-muted) 28%, transparent);
+  transition: background-color 180ms ease;
+}
+
+.switchTrack i {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--settings-raised);
+  box-shadow: 0 2px 6px rgb(20 30 25 / 24%);
+  transition: transform 180ms ease;
+}
+
+.switchOn .switchTrack {
+  background: var(--settings-accent);
+}
+
+.switchOn .switchTrack i {
+  transform: translateX(20px);
+}
+
+.statusBadge {
+  border: 1px solid color-mix(in srgb, var(--settings-accent) 48%, transparent);
+  border-radius: 999px;
+  padding: 7px 11px;
+  color: var(--settings-accent);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.clearButton {
+  min-width: 64px;
+  min-height: 44px;
+  border: 1px solid rgb(171 65 82 / 46%);
+  border-radius: 13px;
+  background: rgb(171 65 82 / 8%);
+  color: #a63f51;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.dark .clearButton {
+  color: #ffb5c1;
+}
+
+.header a:focus-visible,
+.switch:focus-visible,
+.clearButton:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--settings-accent) 52%, transparent);
+  outline-offset: 3px;
+}
+
+.notice {
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--settings-raised) 72%, transparent);
+  padding: 12px 16px;
+  color: var(--settings-text);
+  font-size: 14px;
+  text-align: center;
+  backdrop-filter: blur(12px);
+}
+
+.footer {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 34px 16px 0;
+  color: var(--settings-muted);
+  text-align: center;
+}
+
+.footerIcon {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 5px;
+  color: var(--settings-accent);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.35;
+}
+
+.footer p {
+  font-size: 14px;
+}
+
+.footer small {
+  font-size: 12px;
+}
+
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--settings-raised) 72%, transparent);
+  padding: 16px 22px;
+  transform: translate(-50%, -50%);
+  color: var(--settings-muted);
+}
+
+@media (prefers-color-scheme: dark) {
+  .auto {
+    --settings-bg: #111916;
+    --settings-raised: #1d2b25;
+    --settings-text: #f2f4f1;
+    --settings-muted: #b8c5be;
+    --settings-line: #34463c;
+    --settings-accent: #e1849c;
+    color-scheme: dark;
+  }
+
+  .auto::before {
+    background-image: url('/demo-assets/sakura-garden-hero-dark-v3.webp');
+  }
+}
+
+@media (max-width: 560px) {
+  .light {
+  color-scheme: light;
+}
+
+.page {
+    padding: 12px 12px 44px;
+  }
+
+  .header {
+    top: 8px;
+  }
+
+  .settingCard {
+    grid-template-columns: 36px minmax(0, 1fr);
+    padding: 16px 14px;
+  }
+
+  .switch,
+  .statusBadge,
+  .clearButton {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .switch {
+    grid-template-columns: auto auto;
+    min-width: 0;
+    margin-top: 4px;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .header,
+  .settingCard,
+  .notice {
+    background: var(--settings-raised);
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switchTrack,
+  .switchTrack i {
+    transition: none;
+  }
+}

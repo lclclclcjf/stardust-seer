@@ -47,16 +47,6 @@
   max-width: 860px;
 }
 
-.eyebrow {
-  margin: 0 0 20px;
-  color: #a53657;
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
 .intro h1 {
   margin: 0;
   font-size: clamp(3.2rem, 7vw, 6.4rem);
@@ -79,15 +69,16 @@
 
 .demoGrid {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.6fr);
-  grid-template-rows: auto auto;
-  gap: 24px;
-  margin-top: 72px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 64px;
 }
 
 .demoCard {
   position: relative;
   display: grid;
+  grid-template-rows: minmax(320px, 1fr) auto;
+  min-height: 620px;
   overflow: hidden;
   border: 1px solid #aeb9b3;
   color: inherit;
@@ -109,18 +100,9 @@
 }
 
 .garden {
-  grid-row: 1 / 3;
-  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-  min-height: 740px;
   border-radius: 16px;
   background: #f7f8f5;
   box-shadow: 0 28px 70px rgb(46 72 58 / 16%);
-}
-
-.eclipse,
-.theatre {
-  grid-template-columns: minmax(0, 1fr);
-  min-height: 358px;
 }
 
 .eclipse {
@@ -140,7 +122,7 @@
 
 .imageWrap {
   position: relative;
-  min-height: 0;
+  min-height: 320px;
   overflow: hidden;
 }
 
@@ -156,7 +138,7 @@
 }
 
 .garden .imageWrap {
-  min-height: 740px;
+  min-height: 320px;
 }
 
 .garden .imageWrap img {
@@ -165,8 +147,9 @@
 
 .eclipse .imageWrap,
 .theatre .imageWrap {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  inset: auto;
+  min-height: 320px;
 }
 
 .eclipse .imageWrap::after,
@@ -177,31 +160,29 @@
 }
 
 .eclipse .imageWrap::after {
-  background: linear-gradient(90deg, rgb(10 15 19 / 88%), rgb(10 15 19 / 20%));
+  background: linear-gradient(0deg, rgb(10 15 19 / 72%), rgb(10 15 19 / 8%) 58%);
 }
 
 .theatre .imageWrap::after {
-  background: linear-gradient(90deg, rgb(16 71 183 / 90%), rgb(16 71 183 / 18%));
+  background: linear-gradient(0deg, rgb(16 71 183 / 74%), rgb(16 71 183 / 6%) 58%);
 }
 
 .cardCopy {
   position: relative;
   z-index: 1;
   display: flex;
+  min-height: 282px;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-end;
-  padding: clamp(24px, 4vw, 52px);
+  padding: clamp(24px, 2.4vw, 34px);
 }
 
-.garden .cardCopy {
-  justify-content: center;
-}
-
+.garden .cardCopy,
 .eclipse .cardCopy,
 .theatre .cardCopy {
-  max-width: 360px;
-  min-height: 358px;
+  max-width: none;
+  min-height: 282px;
 }
 
 .english {
@@ -223,23 +204,20 @@
 
 .cardCopy h2 {
   margin: 14px 0 0;
-  font-size: clamp(2rem, 4vw, 4.4rem);
+  font-size: clamp(2rem, 3vw, 3.25rem);
   font-weight: 720;
   letter-spacing: -0.055em;
   line-height: 1;
 }
 
-.eclipse .cardCopy h2,
-.theatre .cardCopy h2 {
-  font-size: clamp(2rem, 3.3vw, 3.25rem);
-}
-
 .cardCopy p {
   max-width: 24rem;
+  min-height: 3.3em;
   margin: 18px 0 0;
   color: #5b6862;
   font-size: 14px;
   line-height: 1.65;
+  text-wrap: pretty;
 }
 
 .eclipse .cardCopy p {
@@ -250,19 +228,11 @@
   color: #e1e9ff;
 }
 
-.dials {
-  margin-top: 22px;
-  color: currentColor;
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 11px;
-  opacity: 0.72;
-}
-
 .openLabel {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  margin-top: 28px;
+  margin-top: auto;
   border: 1px solid currentColor;
   border-radius: 999px;
   padding: 0 17px;
@@ -361,18 +331,27 @@
 
 @media (max-width: 980px) {
   .demoGrid {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: none;
+    gap: 14px;
   }
 
-  .garden {
-    grid-row: auto;
-    grid-template-columns: minmax(0, 1.1fr) minmax(260px, 0.9fr);
-    min-height: 620px;
+  .demoCard {
+    grid-template-rows: minmax(260px, 1fr) auto;
+    min-height: 580px;
   }
 
-  .garden .imageWrap {
-    min-height: 620px;
+  .imageWrap,
+  .garden .imageWrap,
+  .eclipse .imageWrap,
+  .theatre .imageWrap {
+    min-height: 260px;
+  }
+
+  .cardCopy,
+  .garden .cardCopy,
+  .eclipse .cardCopy,
+  .theatre .cardCopy {
+    min-height: 300px;
+    padding: 22px;
   }
 }
 
@@ -392,41 +371,39 @@
   }
 
   .demoGrid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
     margin-top: 52px;
   }
 
+  .demoCard,
   .garden,
   .eclipse,
   .theatre {
     grid-template-columns: minmax(0, 1fr);
-    min-height: auto;
+    grid-template-rows: minmax(400px, 1fr) auto;
+    min-height: 720px;
   }
 
-  .garden .imageWrap {
-    min-height: 470px;
-  }
-
-  .garden .cardCopy {
-    min-height: 330px;
-  }
-
+  .imageWrap,
+  .garden .imageWrap,
   .eclipse .imageWrap,
   .theatre .imageWrap {
-    position: relative;
-    inset: auto;
-    min-height: 410px;
+    min-height: 400px;
+  }
+
+  .cardCopy,
+  .garden .cardCopy,
+  .eclipse .cardCopy,
+  .theatre .cardCopy {
+    min-height: 320px;
+    padding: 28px;
   }
 
   .eclipse .imageWrap::after,
   .theatre .imageWrap::after {
     background: linear-gradient(0deg, currentColor 0%, transparent 44%);
     opacity: 0.18;
-  }
-
-  .eclipse .cardCopy,
-  .theatre .cardCopy {
-    max-width: none;
-    min-height: 320px;
   }
 
   .footer {

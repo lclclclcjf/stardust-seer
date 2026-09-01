@@ -4,8 +4,8 @@ import Link from "next/link";
 import styles from "./demos.module.css";
 
 export const metadata: Metadata = {
-  title: "三个设计方向 | 樱花塔罗",
-  description: "樱花塔罗的三套全新网页设计 Demo。",
+  title: "更多主题 | 樱花塔罗",
+  description: "欢迎探索樱花塔罗的其他主题。",
 };
 
 const DEMOS = [
@@ -15,9 +15,8 @@ const DEMOS = [
     name: "樱雾庭院",
     english: "Sakura Garden",
     description: "安静、克制，以晨雾和留白承托占卜仪式。",
-    image: "/demo-assets/sakura-garden.png",
+    image: "/demo-assets/sakura-garden-hero-light-v3.webp",
     alt: "樱花枝、水钵与浅色塔罗牌",
-    dials: "变化 6 / 动效 4 / 密度 3",
   },
   {
     className: styles.eclipse,
@@ -27,7 +26,6 @@ const DEMOS = [
     description: "深色、精密，让每次抽牌像打开一份天文档案。",
     image: "/demo-assets/lunar-archive.png",
     alt: "黑色月相塔罗牌与银色日蚀环",
-    dials: "变化 8 / 动效 6 / 密度 4",
   },
   {
     className: styles.theatre,
@@ -37,7 +35,6 @@ const DEMOS = [
     description: "大胆、明快，用海报构图把抽牌变成一次登场。",
     image: "/demo-assets/hana-theatre.png",
     alt: "蓝色背景中的纸艺樱花与塔罗牌",
-    dials: "变化 9 / 动效 7 / 密度 4",
   },
 ];
 
@@ -55,18 +52,17 @@ export default function DemosPage() {
       </header>
 
       <main className={styles.main}>
-        <section className={styles.intro}>
-          <p className={styles.eyebrow}>设计探索</p>
+        <section className={styles.intro} data-purpose="theme-intro">
           <h1>
             同一场占卜
             <span>三种进入方式</span>
           </h1>
           <p>
-            三个方案共享现有功能与内容，仅改变页面的节奏、材质和情绪。
+            欢迎探索其他主题，找到与你此刻心境相合的占卜庭院。
           </p>
         </section>
 
-        <section className={styles.demoGrid} aria-label="三个设计方案">
+        <section className={styles.demoGrid} data-purpose="theme-gallery" aria-label="其他占卜主题">
           {DEMOS.map((demo) => (
             <Link
               className={`${styles.demoCard} ${demo.className}`}
@@ -79,7 +75,7 @@ export default function DemosPage() {
                   alt={demo.alt}
                   width={1120}
                   height={1400}
-                  sizes="(max-width: 767px) 92vw, 55vw"
+                  sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 980px) 31vw, 420px"
                   loading={demo.name === "樱雾庭院" ? "eager" : "lazy"}
                 />
               </div>
@@ -87,8 +83,7 @@ export default function DemosPage() {
                 <span className={styles.english}>{demo.english}</span>
                 <h2>{demo.name}</h2>
                 <p>{demo.description}</p>
-                <span className={styles.dials}>{demo.dials}</span>
-                <span className={styles.openLabel}>打开 Demo</span>
+                <span className={styles.openLabel}>进入</span>
               </div>
             </Link>
           ))}

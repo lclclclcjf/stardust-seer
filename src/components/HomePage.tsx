@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { ThemeId } from '@/types';
-import { THEME_LIST } from '@/styles/themes';
 import StylePicker from './StylePicker';
 import { spreads } from '@/data/spreads';
 

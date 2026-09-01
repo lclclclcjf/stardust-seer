@@ -43,27 +43,27 @@
 }
 
 .sakuraBack {
-  background-image: url('/card-assets/sakura-card-back-v3.png');
+  background-image: url('/card-assets/sakura-card-back-v3.webp');
 }
 
 .sakuraFace {
-  background-image: url('/card-assets/sakura-card-face-v3.png');
+  background-image: url('/card-assets/sakura-card-face-v3.webp');
 }
 
 .dreamyBack {
-  background-image: url('/card-assets/dreamy-card-back-v1.png');
+  background-image: url('/card-assets/dreamy-card-back-v1.webp');
 }
 
 .dreamyFace {
-  background-image: url('/card-assets/dreamy-card-face-v1.png');
+  background-image: url('/card-assets/dreamy-card-face-v1.webp');
 }
 
 .classicBack {
-  background-image: url('/card-assets/classic-card-back-v1.png');
+  background-image: url('/card-assets/classic-card-back-v1.webp');
 }
 
 .classicFace {
-  background-image: url('/card-assets/classic-card-face-v1.png');
+  background-image: url('/card-assets/classic-card-face-v1.webp');
 }
 
 .aiSheen {
