@@ -3,7 +3,7 @@
 import { useCallback } from 'react';
 import { allCards, getCardById } from '@/data/cards';
 import { getSpreadById } from '@/data/spreads';
-import type { AiDeckId, DrawnCard, DrawResult, ThemeId, UiThemeMode } from '@/types';
+import type { AiDeckId, DrawnCard, DrawResult, GardenSeason, ThemeId, UiThemeMode, UiVariant } from '@/types';
 import { drawRandom, randomReversed } from '@/lib/shuffle';
 import { useLocalStorage, setToStorage, getFromStorage } from './useLocalStorage';
 
@@ -20,6 +20,8 @@ export function performDraw(
   question: string,
   aiDeckId?: AiDeckId,
   uiTheme: UiThemeMode = 'auto',
+  uiVariant: UiVariant = 'garden',
+  gardenSeason: GardenSeason = 'spring',
 ): DrawResult {
   const spread = getSpreadById(spreadId);
   if (!spread) throw new Error(`未知牌阵: ${spreadId}`);
@@ -33,7 +35,7 @@ export function performDraw(
     isReversed: randomReversed(),
   }));
 
-  return persistDraw(spreadId, themeId, question, cards, aiDeckId, uiTheme);
+  return persistDraw(spreadId, themeId, question, cards, aiDeckId, uiTheme, uiVariant, gardenSeason);
 }
 
 export function performSelectedDraw(
@@ -43,6 +45,8 @@ export function performSelectedDraw(
   cards: DrawnCard[],
   aiDeckId?: AiDeckId,
   uiTheme: UiThemeMode = 'auto',
+  uiVariant: UiVariant = 'garden',
+  gardenSeason: GardenSeason = 'spring',
 ): DrawResult {
   const spread = getSpreadById(spreadId);
   const uniqueCards = new Set(cards.map((card) => card.cardId));
@@ -51,7 +55,7 @@ export function performSelectedDraw(
     throw new Error('选牌结果无效，请重新开始抽牌。');
   }
 
-  return persistDraw(spreadId, themeId, question, cards, aiDeckId, uiTheme);
+  return persistDraw(spreadId, themeId, question, cards, aiDeckId, uiTheme, uiVariant, gardenSeason);
 }
 
 function persistDraw(
@@ -61,6 +65,8 @@ function persistDraw(
   cards: DrawnCard[],
   aiDeckId?: AiDeckId,
   uiTheme: UiThemeMode = 'auto',
+  uiVariant: UiVariant = 'garden',
+  gardenSeason: GardenSeason = 'spring',
 ): DrawResult {
   const result: DrawResult = {
     id: generateId(),
@@ -69,6 +75,8 @@ function persistDraw(
     themeId,
     aiDeckId: themeId === 'ai' ? aiDeckId : undefined,
     uiTheme,
+    uiVariant,
+    gardenSeason,
     question,
     cards,
   };

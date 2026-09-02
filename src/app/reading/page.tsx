@@ -6,6 +6,8 @@ import Link from 'next/link';
 import type { ThemeId } from '@/types';
 import { DEFAULT_AI_DECK_ID } from '@/styles/ai-decks';
 import { parseDemoTheme } from '@/components/design-demos/demo-theme';
+import { parseGardenSeason } from '@/components/design-demos/garden-season';
+import { getUiVariantHomeHref, parseUiVariant } from '@/components/design-demos/ui-variant';
 import { getDrawDetails } from '@/hooks/useTarot';
 import CardFace from '@/components/CardFace';
 import ReadingDisplay from '@/components/ReadingDisplay';
@@ -22,6 +24,8 @@ export default function ReadingPage({
   const router = useRouter();
   const drawId = (params.drawId as string) || '';
   const requestedTheme = parseDemoTheme(params.uiTheme);
+  const requestedVariant = parseUiVariant(params.uiVariant);
+  const requestedSeason = parseGardenSeason(params.gardenSeason);
   const mounted = useSyncExternalStore(
     () => () => undefined,
     () => true,
@@ -30,7 +34,7 @@ export default function ReadingPage({
 
   if (!mounted) {
     return (
-      <div className={`${styles.page} ${styles[requestedTheme]} flex items-center justify-center min-h-screen`}>
+      <div className={`${styles.page} ${styles[requestedTheme]} ${styles[requestedVariant]} ${styles[requestedSeason] ?? ''} flex items-center justify-center min-h-screen`}>
         <p className="text-ink-300">加载中...</p>
       </div>
     );
@@ -40,10 +44,10 @@ export default function ReadingPage({
 
   if (!details) {
     return (
-      <div className={`${styles.page} ${styles[requestedTheme]} flex flex-col items-center justify-center min-h-screen p-6`}>
+      <div className={`${styles.page} ${styles[requestedTheme]} ${styles[requestedVariant]} ${styles[requestedSeason] ?? ''} flex flex-col items-center justify-center min-h-screen p-6`}>
         <p className="text-ink-500 text-lg">未找到占卜记录</p>
         <button
-          onClick={() => router.push(requestedTheme === 'auto' ? '/' : `/?theme=${requestedTheme}`)}
+          onClick={() => router.push(getUiVariantHomeHref(requestedVariant, requestedTheme, requestedSeason))}
           className="mt-4 px-6 py-3 bg-sakura-400 text-white rounded-2xl hover:bg-sakura-500 transition-colors"
         >
           返回首页
@@ -55,11 +59,13 @@ export default function ReadingPage({
   const { draw, spread, cards } = details;
   const themeId = draw.themeId as ThemeId;
   const uiTheme = draw.uiTheme ?? requestedTheme;
+  const uiVariant = draw.uiVariant ?? requestedVariant;
+  const gardenSeason = draw.gardenSeason ?? requestedSeason;
   const aiDeckId = draw.aiDeckId ?? DEFAULT_AI_DECK_ID;
-  const homeHref = uiTheme === 'auto' ? '/' : `/?theme=${uiTheme}`;
+  const homeHref = getUiVariantHomeHref(uiVariant, uiTheme, gardenSeason);
   const retryHref = `/draw?spread=${draw.spreadId}&theme=${themeId}${
     themeId === 'ai' ? `&aiDeck=${aiDeckId}` : ''
-  }&uiTheme=${uiTheme}`;
+  }&uiTheme=${uiTheme}&uiVariant=${uiVariant}&gardenSeason=${gardenSeason}`;
   const question = draw.question.trim();
   const aiRequest: AiReadingRequest | null = question
     ? {
@@ -92,7 +98,7 @@ export default function ReadingPage({
   );
 
   return (
-    <div className={`${styles.page} ${styles[uiTheme]} flex flex-col items-center min-h-screen`}>
+    <div className={`${styles.page} ${styles[uiTheme]} ${styles[uiVariant]} ${styles[gardenSeason] ?? ''} flex flex-col items-center min-h-screen`}>
       {/* 顶部 */}
       <header className="w-full max-w-lg mx-auto px-6 pt-6 pb-4">
         <div className="flex items-center justify-between">

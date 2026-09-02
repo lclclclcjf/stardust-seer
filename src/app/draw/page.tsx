@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import type { DrawnCard, ThemeId } from '@/types';
 import { parseAiDeckId } from '@/styles/ai-decks';
 import { parseDemoTheme } from '@/components/design-demos/demo-theme';
+import { parseGardenSeason } from '@/components/design-demos/garden-season';
+import { getUiVariantHomeHref, parseUiVariant, UI_VARIANT_NAMES, UI_VARIANT_RITUAL_LABELS } from '@/components/design-demos/ui-variant';
 import { getSpreadById } from '@/data/spreads';
 import { allCards, getCardById } from '@/data/cards';
 import { randomReversed, shuffle } from '@/lib/shuffle';
@@ -46,6 +48,9 @@ export default function DrawPage({
   const themeId = (params.theme as ThemeId) || 'sakura';
   const aiDeckId = parseAiDeckId(params.aiDeck);
   const uiTheme = parseDemoTheme(params.uiTheme);
+  const uiVariant = parseUiVariant(params.uiVariant);
+  const gardenSeason = parseGardenSeason(params.gardenSeason);
+  const homeHref = getUiVariantHomeHref(uiVariant, uiTheme, gardenSeason);
   const question = (params.question as string) || '';
   const spread = getSpreadById(spreadId);
   const [state, dispatch] = useReducer(ritualReducer, initialRitualState);
@@ -60,7 +65,7 @@ export default function DrawPage({
       });
     }, 1500);
     return () => window.clearTimeout(timer);
-  }, [requiredCount, spreadId, themeId, question, aiDeckId, uiTheme]);
+  }, [requiredCount, spreadId, themeId, question, aiDeckId, uiTheme, uiVariant, gardenSeason]);
 
   useEffect(() => {
     if (state.phase !== 'auto-selecting' || state.selected.length >= requiredCount) return;
@@ -100,10 +105,10 @@ export default function DrawPage({
 
   if (!spread) {
     return (
-      <main className={styles.page}>
+      <main className={`${styles.page} ${styles[uiVariant]} ${styles[gardenSeason] ?? ''}`}>
         <div className={styles.invalidState}>
           <p>这个牌阵不存在。</p>
-          <button type="button" onClick={() => router.push('/')}>返回首页</button>
+          <button type="button" onClick={() => router.push(homeHref)}>返回主题首页</button>
         </div>
       </main>
     );
@@ -248,7 +253,16 @@ export default function DrawPage({
       isReversed: card.isReversed,
     }));
     try {
-      const result = performSelectedDraw(spreadId, themeId, question, cards, aiDeckId, uiTheme);
+      const result = performSelectedDraw(
+        spreadId,
+        themeId,
+        question,
+        cards,
+        aiDeckId,
+        uiTheme,
+        uiVariant,
+        gardenSeason,
+      );
       dispatch({ type: 'CONFIRM', drawId: result.id, cardCount: cards.length });
     } catch (error: unknown) {
       dispatch({
@@ -275,16 +289,16 @@ export default function DrawPage({
   if (state.phase === 'complete') status = '牌面已经全部显现';
 
   return (
-    <main className={styles.page}>
+    <main className={`${styles.page} ${styles[uiVariant]} ${styles[gardenSeason] ?? ''}`}>
       <div className={styles.backdrop} aria-hidden="true" />
       <div className={styles.mist} aria-hidden="true" />
 
       <header className={styles.topBar}>
-        <button type="button" className={styles.backButton} onClick={() => router.back()}>
+        <button type="button" className={styles.backButton} onClick={() => router.push(homeHref)}>
           <span aria-hidden="true">←</span>
-          返回庭院
+          返回{UI_VARIANT_NAMES[uiVariant]}
         </button>
-        <p>SAKURA DIVINATION</p>
+        <p>{UI_VARIANT_RITUAL_LABELS[uiVariant]}</p>
         <span className={styles.stepMark}>抽牌仪式 · 02</span>
       </header>
 
@@ -500,7 +514,7 @@ export default function DrawPage({
       {state.phase === 'complete' && state.drawId && (
         <footer className={styles.completeFooter}>
           <p>请停留片刻，感受牌面的第一印象</p>
-          <button type="button" onClick={() => router.push(`/reading?drawId=${state.drawId}&uiTheme=${uiTheme}`)}>
+          <button type="button" onClick={() => router.push(`/reading?drawId=${state.drawId}&uiTheme=${uiTheme}&uiVariant=${uiVariant}&gardenSeason=${gardenSeason}`)}>
             查看完整解读
           </button>
         </footer>

@@ -3,9 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import type { ThemeId } from "@/types";
+import type { GardenSeason, ThemeId } from "@/types";
 import { DEFAULT_AI_DECK_ID, randomAiDeckId } from "@/styles/ai-decks";
 import type { DemoThemeMode } from "./demo-theme";
+import { GARDEN_SEASONS } from "./garden-season";
+import { getGardenPageHref } from "./ui-variant";
 import styles from "./tarot-demo.module.css";
 
 export type DemoVariant = "garden" | "eclipse" | "theatre";
@@ -54,6 +56,29 @@ const DEMOS: Record<DemoVariant, DemoConfig> = {
   },
 };
 
+const GARDEN_IMAGES: Record<GardenSeason, Pick<DemoConfig, "image" | "darkImage" | "imageAlt">> = {
+  spring: {
+    image: "/demo-assets/sakura-garden-hero-light-v3.webp",
+    darkImage: "/demo-assets/sakura-garden-hero-dark-v3.webp",
+    imageAlt: "春日樱花、石灯笼、水钵与塔罗牌组成的静谧庭院",
+  },
+  summer: {
+    image: "/demo-assets/garden-summer-light.webp",
+    darkImage: "/demo-assets/garden-summer-dark.webp",
+    imageAlt: "夏日绿枫、绣球花、溪流与塔罗牌组成的清润庭院",
+  },
+  autumn: {
+    image: "/demo-assets/garden-autumn-light.webp",
+    darkImage: "/demo-assets/garden-autumn-dark.webp",
+    imageAlt: "秋日枫叶、芒草、溪流与塔罗牌组成的温暖庭院",
+  },
+  winter: {
+    image: "/demo-assets/garden-winter-light.webp",
+    darkImage: "/demo-assets/garden-winter-dark.webp",
+    imageAlt: "冬日积雪、山茶、溪流与塔罗牌组成的寂静庭院",
+  },
+};
+
 const CARD_THEMES = [
   { value: "sakura", name: "日式樱花", detail: "清醒柔和" },
   { value: "dreamy", name: "梦幻治愈", detail: "温柔直觉" },
@@ -70,19 +95,25 @@ const SPREADS = [
 export default function TarotDemo({
   variant,
   themeMode,
+  gardenSeason = "spring",
   experienceMode = "demo",
 }: {
   variant: DemoVariant;
   themeMode: DemoThemeMode;
+  gardenSeason?: GardenSeason;
   experienceMode?: "demo" | "production";
 }) {
   const demoRef = useRef<HTMLDivElement>(null);
   const [aiDeckId, setAiDeckId] = useState(DEFAULT_AI_DECK_ID);
-  const demo = DEMOS[variant];
+  const baseDemo = DEMOS[variant];
+  const demo = variant === "garden" ? { ...baseDemo, ...GARDEN_IMAGES[gardenSeason] } : baseDemo;
   const nextTheme = themeMode === "dark" ? "light" : "dark";
   const themeLabel = themeMode === "dark" ? "浅色预览" : "深色预览";
   const isProduction = experienceMode === "production";
   const pageRoute = isProduction ? "/" : demo.route;
+  const themeHref = variant === "garden"
+    ? getGardenPageHref(pageRoute, nextTheme, gardenSeason)
+    : `${pageRoute}?theme=${nextTheme}`;
   const activeImage =
     themeMode === "dark" && demo.darkImage ? demo.darkImage : demo.image;
 
@@ -160,7 +191,7 @@ export default function TarotDemo({
             <Link href={`/settings?theme=${themeMode}`}>设置</Link>
             <Link
               className={styles.themeSwitch}
-              href={`${pageRoute}?theme=${nextTheme}`}
+              href={themeHref}
               rel="nofollow"
             >
               {themeLabel}
@@ -172,7 +203,7 @@ export default function TarotDemo({
               <Link href="/demos">更多主题</Link>
               <Link href="/history">历史</Link>
               <Link href={`/settings?theme=${themeMode}`}>设置</Link>
-              <Link href={`${pageRoute}?theme=${nextTheme}`} rel="nofollow">
+              <Link href={themeHref} rel="nofollow">
                 {themeLabel}
               </Link>
             </div>
@@ -189,6 +220,22 @@ export default function TarotDemo({
               <span>{demo.title[1]}</span>
             </h1>
             <p className={styles.heroIntro}>{demo.intro}</p>
+            {variant === "garden" && (
+              <nav className={styles.seasonPicker} aria-label="选择庭院季节">
+                <span>庭院时节</span>
+                <div>
+                  {GARDEN_SEASONS.map((season) => (
+                    <Link
+                      key={season.value}
+                      href={getGardenPageHref(pageRoute, themeMode, season.value)}
+                      aria-current={gardenSeason === season.value ? "page" : undefined}
+                    >
+                      {season.label}
+                    </Link>
+                  ))}
+                </div>
+              </nav>
+            )}
             <div className={styles.heroActions}>
               <a className={styles.primaryAction} href="#reading">
                 开始提问
@@ -269,6 +316,10 @@ export default function TarotDemo({
           <form className={styles.readingForm} action="/draw" method="get">
             <input name="aiDeck" type="hidden" value={aiDeckId} readOnly />
             <input name="uiTheme" type="hidden" value={themeMode} readOnly />
+            <input name="uiVariant" type="hidden" value={variant} readOnly />
+            {variant === "garden" && (
+              <input name="gardenSeason" type="hidden" value={gardenSeason} readOnly />
+            )}
             <fieldset className={styles.controlGroup}>
               <legend>牌面风格</legend>
               <div className={styles.themeGrid}>

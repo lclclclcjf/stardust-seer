@@ -50,6 +50,8 @@ export interface DrawResult {
   themeId: ThemeId;
   aiDeckId?: AiDeckId;
   uiTheme?: UiThemeMode;
+  uiVariant?: UiVariant;
+  gardenSeason?: GardenSeason;
   question: string;
   cards: DrawnCard[];
 }
@@ -72,6 +74,8 @@ export type AiDeckId =
   | 'abyssal-pearl';
 
 export type UiThemeMode = 'auto' | 'light' | 'dark';
+export type UiVariant = 'garden' | 'eclipse' | 'theatre';
+export type GardenSeason = 'spring' | 'summer' | 'autumn' | 'winter';
 
 export interface ThemeConfig {
   id: ThemeId;

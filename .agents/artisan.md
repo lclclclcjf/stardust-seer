@@ -18,3 +18,7 @@
 - 花札剧场 uses the approved 1672×941 European opera artwork as one fixed full-screen scene; desktop copy occupies the darker center-left stage, mobile crops around 58% horizontal focus, and the reading controls use 58% raised-surface glass with reduced-transparency fallbacks.
 
 - 花札剧场 v3 使用独立的 16:9 深浅背景；桌面端深色文案靠左、浅色文案靠右，自动模式跟随系统配色。
+
+- Theme identity is carried separately from light/dark mode as `uiVariant`; draw uses each variant's dark scene, reading resolves paired light/dark artwork, and legacy records safely default to Garden.
+
+- 花札剧场主题缩略图复用已上线的 16:9 暖日光剧场资产；以 `object-fit: cover` 和 52% 水平焦点铺满窗口，在裁切左右边缘的同时保留飞牌与面具。

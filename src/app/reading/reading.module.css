@@ -1,4 +1,6 @@
 .page {
+  --garden-light-image: url('/demo-assets/sakura-garden-hero-light-v3.webp');
+  --garden-dark-image: url('/demo-assets/sakura-garden-hero-dark-v3.webp');
   --reading-bg: #edf0ec;
   --reading-raised: #ffffff;
   --reading-line: #c9d0cc;
@@ -27,7 +29,7 @@
 }
 
 .page::before {
-  background: center / cover no-repeat url('/demo-assets/sakura-garden-hero-light-v3.webp');
+  background: center / cover no-repeat var(--garden-light-image);
 }
 
 .page::after {
@@ -37,6 +39,54 @@
     linear-gradient(180deg, color-mix(in srgb, var(--reading-bg) 22%, transparent), transparent 38%, color-mix(in srgb, var(--reading-bg) 42%, transparent));
 }
 
+.eclipse {
+  --reading-bg: #e6ebee;
+  --reading-raised: #f8fafb;
+  --reading-line: #bdc9d0;
+  --reading-shadow: rgb(22 45 64 / 20%);
+}
+
+.theatre {
+  --reading-bg: #eee6db;
+  --reading-raised: #fffaf3;
+  --reading-line: #d2c3b1;
+  --reading-shadow: rgb(62 35 27 / 20%);
+}
+
+.garden.summer {
+  --garden-light-image: url('/demo-assets/garden-summer-light.webp');
+  --garden-dark-image: url('/demo-assets/garden-summer-dark.webp');
+}
+
+.garden.autumn {
+  --garden-light-image: url('/demo-assets/garden-autumn-light.webp');
+  --garden-dark-image: url('/demo-assets/garden-autumn-dark.webp');
+}
+
+.garden.winter {
+  --garden-light-image: url('/demo-assets/garden-winter-light.webp');
+  --garden-dark-image: url('/demo-assets/garden-winter-dark.webp');
+}
+
+.eclipse::before {
+  background-image: url('/demo-assets/eclipse-archive-hero-light-v2.png');
+}
+
+.theatre::before {
+  background-image: url('/demo-assets/hana-theatre-opera-light-v3.png');
+}
+
+.eclipse::after {
+  background:
+    linear-gradient(90deg, rgb(230 235 238 / 92%), rgb(230 235 238 / 54%) 52%, rgb(230 235 238 / 24%)),
+    linear-gradient(180deg, rgb(230 235 238 / 18%), transparent 38%, rgb(230 235 238 / 38%));
+}
+
+.theatre::after {
+  background:
+    linear-gradient(90deg, rgb(238 230 219 / 88%), rgb(238 230 219 / 48%) 52%, rgb(238 230 219 / 18%)),
+    linear-gradient(180deg, rgb(238 230 219 / 16%), transparent 38%, rgb(238 230 219 / 40%));
+}
 .light {
   color-scheme: light;
 }
@@ -57,7 +107,7 @@
 }
 
 .dark::before {
-  background-image: url('/demo-assets/sakura-garden-hero-dark-v3.webp');
+  background-image: var(--garden-dark-image);
 }
 
 .dark::after {
@@ -66,6 +116,39 @@
     linear-gradient(180deg, color-mix(in srgb, var(--reading-bg) 16%, transparent), transparent 38%, color-mix(in srgb, var(--reading-bg) 54%, transparent));
 }
 
+.dark.eclipse {
+  --reading-bg: #0a1119;
+  --reading-raised: #16222d;
+  --reading-line: #314454;
+  --reading-shadow: rgb(1 6 12 / 52%);
+}
+
+.dark.theatre {
+  --reading-bg: #130b0c;
+  --reading-raised: #251719;
+  --reading-line: #493335;
+  --reading-shadow: rgb(8 2 3 / 55%);
+}
+
+.dark.eclipse::before {
+  background-image: url('/demo-assets/eclipse-archive-hero-dark-v1.png');
+}
+
+.dark.theatre::before {
+  background-image: url('/demo-assets/hana-theatre-opera-dark-v3.png');
+}
+
+.dark.eclipse::after {
+  background:
+    linear-gradient(90deg, rgb(10 17 25 / 80%), rgb(10 17 25 / 48%) 52%, rgb(10 17 25 / 24%)),
+    linear-gradient(180deg, rgb(10 17 25 / 14%), transparent 38%, rgb(10 17 25 / 56%));
+}
+
+.dark.theatre::after {
+  background:
+    linear-gradient(90deg, rgb(19 11 12 / 80%), rgb(19 11 12 / 46%) 52%, rgb(19 11 12 / 22%)),
+    linear-gradient(180deg, rgb(19 11 12 / 14%), transparent 38%, rgb(19 11 12 / 58%));
+}
 .dark :global(.text-ink-700),
 .dark :global(.text-ink-600) {
   color: #e8edea !important;
@@ -159,7 +242,7 @@
   }
 
   .auto::before {
-    background-image: url('/demo-assets/sakura-garden-hero-dark-v3.webp');
+    background-image: var(--garden-dark-image);
   }
 
   .auto::after {
@@ -168,6 +251,39 @@
       linear-gradient(180deg, color-mix(in srgb, var(--reading-bg) 16%, transparent), transparent 38%, color-mix(in srgb, var(--reading-bg) 54%, transparent));
   }
 
+  .auto.eclipse {
+    --reading-bg: #0a1119;
+    --reading-raised: #16222d;
+    --reading-line: #314454;
+    --reading-shadow: rgb(1 6 12 / 52%);
+  }
+
+  .auto.theatre {
+    --reading-bg: #130b0c;
+    --reading-raised: #251719;
+    --reading-line: #493335;
+    --reading-shadow: rgb(8 2 3 / 55%);
+  }
+
+  .auto.eclipse::before {
+    background-image: url('/demo-assets/eclipse-archive-hero-dark-v1.png');
+  }
+
+  .auto.theatre::before {
+    background-image: url('/demo-assets/hana-theatre-opera-dark-v3.png');
+  }
+
+  .auto.eclipse::after {
+    background:
+      linear-gradient(90deg, rgb(10 17 25 / 80%), rgb(10 17 25 / 48%) 52%, rgb(10 17 25 / 24%)),
+      linear-gradient(180deg, rgb(10 17 25 / 14%), transparent 38%, rgb(10 17 25 / 56%));
+  }
+
+  .auto.theatre::after {
+    background:
+      linear-gradient(90deg, rgb(19 11 12 / 80%), rgb(19 11 12 / 46%) 52%, rgb(19 11 12 / 22%)),
+      linear-gradient(180deg, rgb(19 11 12 / 14%), transparent 38%, rgb(19 11 12 / 58%));
+  }
   .auto :global(.text-ink-700),
   .auto :global(.text-ink-600) {
     color: #e8edea !important;

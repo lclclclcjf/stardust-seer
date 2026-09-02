@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./demos.module.css";
+import { MotionThemeCard, ThemeRippleField } from "./ThemeMotion";
 
 export const metadata: Metadata = {
   title: "更多主题 | 樱花塔罗",
@@ -32,15 +33,16 @@ const DEMOS = [
     href: "/demos/theatre",
     name: "花札剧场",
     english: "Hana Theatre",
-    description: "大胆、明快，用海报构图把抽牌变成一次登场。",
-    image: "/demo-assets/hana-theatre.png",
-    alt: "蓝色背景中的纸艺樱花与塔罗牌",
+    description: "幕光、面具与飞牌交叠，让每次抽牌成为一次登场。",
+    image: "/demo-assets/hana-theatre-opera-light-v3.png",
+    alt: "欧式剧场舞台中的戏剧面具与飞落塔罗牌",
   },
 ];
 
 export default function DemosPage() {
   return (
     <div className={styles.page}>
+      <ThemeRippleField />
       <header className={styles.header}>
         <nav className={styles.nav} aria-label="设计 Demo 导航">
           <Link href="/">樱花塔罗</Link>
@@ -64,8 +66,8 @@ export default function DemosPage() {
 
         <section className={styles.demoGrid} data-purpose="theme-gallery" aria-label="其他占卜主题">
           {DEMOS.map((demo) => (
-            <Link
-              className={`${styles.demoCard} ${demo.className}`}
+            <MotionThemeCard
+              className={demo.className}
               href={demo.href}
               key={demo.name}
             >
@@ -85,7 +87,7 @@ export default function DemosPage() {
                 <p>{demo.description}</p>
                 <span className={styles.openLabel}>进入</span>
               </div>
-            </Link>
+            </MotionThemeCard>
           ))}
         </section>
       </main>

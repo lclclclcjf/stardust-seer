@@ -36,6 +36,89 @@
     linear-gradient(to bottom, rgba(8, 25, 21, 0.02), rgba(3, 12, 10, 0.58));
 }
 
+.garden.summer .backdrop,
+.garden.autumn .backdrop,
+.garden.winter .backdrop {
+  background-position: center;
+  background-size: cover;
+}
+
+.garden.summer .backdrop {
+  background-image:
+    linear-gradient(90deg, rgb(3 13 14 / 72%), rgb(4 20 22 / 34%) 48%, rgb(2 10 13 / 60%)),
+    linear-gradient(to bottom, rgb(3 14 17 / 38%), rgb(2 10 13 / 68%)),
+    url('/demo-assets/garden-summer-dark.webp');
+}
+
+.garden.autumn {
+  background: #140b08;
+}
+
+.garden.autumn .backdrop {
+  background-image:
+    linear-gradient(90deg, rgb(15 6 5 / 74%), rgb(30 14 10 / 30%) 48%, rgb(12 5 5 / 60%)),
+    linear-gradient(to bottom, rgb(21 9 7 / 34%), rgb(10 4 4 / 70%)),
+    url('/demo-assets/garden-autumn-dark.webp');
+}
+
+.garden.winter {
+  background: #07101a;
+}
+
+.garden.winter .backdrop {
+  background-image:
+    linear-gradient(90deg, rgb(3 8 16 / 72%), rgb(8 20 35 / 30%) 48%, rgb(3 8 15 / 60%)),
+    linear-gradient(to bottom, rgb(5 13 24 / 32%), rgb(2 7 14 / 68%)),
+    url('/demo-assets/garden-winter-dark.webp');
+}
+
+.garden.summer .mist {
+  background: radial-gradient(circle at 50% 42%, rgb(112 184 193 / 12%), transparent 32%), linear-gradient(to bottom, transparent, rgb(2 10 13 / 56%));
+}
+
+.garden.autumn .mist {
+  background: radial-gradient(circle at 50% 42%, rgb(216 148 92 / 12%), transparent 32%), linear-gradient(to bottom, transparent, rgb(12 5 4 / 58%));
+}
+
+.garden.winter .mist {
+  background: radial-gradient(circle at 50% 42%, rgb(146 186 224 / 12%), transparent 32%), linear-gradient(to bottom, transparent, rgb(2 7 14 / 56%));
+}
+
+.eclipse {
+  background: #080d14;
+}
+
+.theatre {
+  background: #100a0b;
+}
+
+.eclipse .backdrop {
+  background-image:
+    linear-gradient(90deg, rgba(3, 8, 15, 0.78), rgba(10, 22, 36, 0.34) 48%, rgba(2, 7, 13, 0.64)),
+    linear-gradient(to bottom, rgba(4, 10, 18, 0.42), rgba(2, 7, 13, 0.72)),
+    url('/demo-assets/eclipse-archive-hero-dark-v1.png');
+  filter: saturate(0.82) contrast(1.05);
+}
+
+.eclipse .mist {
+  background:
+    radial-gradient(circle at 56% 38%, rgba(115, 166, 204, 0.13), transparent 32%),
+    linear-gradient(to bottom, rgba(4, 12, 22, 0.04), rgba(2, 7, 13, 0.62));
+}
+
+.theatre .backdrop {
+  background-image:
+    linear-gradient(90deg, rgba(13, 6, 8, 0.8), rgba(28, 13, 14, 0.3) 48%, rgba(9, 5, 7, 0.62)),
+    linear-gradient(to bottom, rgba(21, 10, 11, 0.36), rgba(9, 5, 7, 0.74)),
+    url('/demo-assets/hana-theatre-opera-dark-v3.png');
+  filter: saturate(0.82) contrast(1.04);
+}
+
+.theatre .mist {
+  background:
+    radial-gradient(circle at 54% 39%, rgba(216, 166, 107, 0.12), transparent 32%),
+    linear-gradient(to bottom, rgba(25, 12, 12, 0.03), rgba(9, 5, 7, 0.64));
+}
 .topBar {
   display: grid;
   width: min(100% - 3rem, 84rem);
