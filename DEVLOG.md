@@ -71,6 +71,17 @@
 - [x] 重新部署（39 秒完成）
 - [x] **线上 AI 解读验证通过** ✅（真实 API 测试返回 ok:true）
 
+### 🍂 庭院四季更新（用户修改）
+- [x] **四季系统**（`garden-season.ts`）— 春/夏/秋/冬庭院背景自动切换
+- [x] 6 张四季背景素材（夏/秋/冬 × 亮/暗主题 WebP）
+- [x] **ThemeMotion 动效组件**（演示页）
+- [x] **UI 变体系统**（`ui-variant.ts`）
+- [x] 测试文件（garden-season / ui-variant）
+- [x] TypeScript 零报错 ✅
+- [x] 生产构建通过 ✅
+- [x] 推送到 GitHub ✅
+- [x] Vercel 自动部署中 🔄
+
 ### 🔗 线上地址
 - **主站**：https://stardust-seer.vercel.app/
 - **GitHub**：https://github.com/lclclclcjf/stardust-seer
