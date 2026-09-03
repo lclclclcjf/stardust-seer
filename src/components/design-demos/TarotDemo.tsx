@@ -8,6 +8,7 @@ import { DEFAULT_AI_DECK_ID, randomAiDeckId } from "@/styles/ai-decks";
 import type { DemoThemeMode } from "./demo-theme";
 import { GARDEN_SEASONS } from "./garden-season";
 import { getGardenPageHref } from "./ui-variant";
+import AutumnLeaves from "./AutumnLeaves";
 import styles from "./tarot-demo.module.css";
 
 export type DemoVariant = "garden" | "eclipse" | "theatre";
@@ -301,6 +302,7 @@ export default function TarotDemo({
                 fetchPriority="high"
               />
             )}
+            {variant === "garden" && gardenSeason === "autumn" && <AutumnLeaves />}
             <div className={styles.imageFrame} aria-hidden="true" />
           </div>
         </section>
