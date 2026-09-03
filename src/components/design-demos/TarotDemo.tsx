@@ -187,6 +187,7 @@ export default function TarotDemo({
           </Link>
           <div className={styles.navLinks}>
             <Link href="/demos">更多主题</Link>
+            <Link href="/artbook">艺术设定集</Link>
             <Link href="/history">历史</Link>
             <Link href={`/settings?theme=${themeMode}`}>设置</Link>
             <Link
@@ -201,6 +202,7 @@ export default function TarotDemo({
             <summary aria-label="打开主导航菜单">菜单</summary>
             <div>
               <Link href="/demos">更多主题</Link>
+              <Link href="/artbook">艺术设定集</Link>
               <Link href="/history">历史</Link>
               <Link href={`/settings?theme=${themeMode}`}>设置</Link>
               <Link href={themeHref} rel="nofollow">

@@ -47,6 +47,8 @@ export default function DemosPage() {
         <nav className={styles.nav} aria-label="设计 Demo 导航">
           <Link href="/">樱花塔罗</Link>
           <div>
+            <Link href="/demos" aria-current="page">更多主题</Link>
+            <Link href="/artbook">艺术设定集</Link>
             <Link href="/history">历史</Link>
             <Link href="/settings">设置</Link>
           </div>
