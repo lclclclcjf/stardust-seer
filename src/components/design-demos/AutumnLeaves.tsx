@@ -18,14 +18,22 @@ type Leaf = {
   color: string;
 };
 
+type SeasonalParticleKind = "autumn" | "winter";
+
 const LEAF_COLORS = ["#b93b2e", "#cf522d", "#dd762c", "#dda52c", "#efbf43"];
 
-function createLeaf(width: number, height: number, startInside = false): Leaf {
+function createLeaf(
+  width: number,
+  height: number,
+  startInside = false,
+  kind: SeasonalParticleKind = "autumn",
+): Leaf {
   const depth = 0.55 + Math.random() * 0.75;
+  const sizeScale = kind === "winter" ? 1.2 : 1;
   return {
     x: Math.random() * width,
     y: startInside ? Math.random() * height : -36 - Math.random() * height * 0.25,
-    size: (8 + Math.random() * 7) * depth,
+    size: (8 + Math.random() * 7) * depth * sizeScale,
     speed: (27 + Math.random() * 37.5) * depth,
     drift: 14 + Math.random() * 32,
     phase: Math.random() * Math.PI * 2,
@@ -34,8 +42,37 @@ function createLeaf(width: number, height: number, startInside = false): Leaf {
     tilt: Math.random() * Math.PI * 2,
     tiltSpeed: 0.8 + Math.random() * 1.1,
     opacity: 0.48 + depth * 0.28,
-    color: LEAF_COLORS[Math.floor(Math.random() * LEAF_COLORS.length)],
+    color:
+      kind === "winter"
+        ? ["#ffffff", "#eef7ff", "#dceeff"][Math.floor(Math.random() * 3)]
+        : LEAF_COLORS[Math.floor(Math.random() * LEAF_COLORS.length)],
   };
+}
+
+function drawSnowflake(context: CanvasRenderingContext2D, particle: Leaf, opacity = 1) {
+  context.save();
+  context.translate(particle.x, particle.y);
+  context.rotate(particle.rotation);
+  context.scale(
+    (particle.size / 10) * (0.72 + Math.abs(Math.cos(particle.tilt)) * 0.28),
+    particle.size / 10,
+  );
+  context.globalAlpha = particle.opacity * opacity;
+  context.strokeStyle = particle.color;
+  context.lineWidth = 0.82;
+  context.lineCap = "round";
+  context.beginPath();
+  for (let arm = 0; arm < 6; arm += 1) {
+    context.moveTo(0, 0);
+    context.lineTo(0, -10);
+    context.moveTo(0, -6);
+    context.lineTo(-2.3, -8.1);
+    context.moveTo(0, -6);
+    context.lineTo(2.3, -8.1);
+    context.rotate(Math.PI / 3);
+  }
+  context.stroke();
+  context.restore();
 }
 
 function drawLeaf(context: CanvasRenderingContext2D, leaf: Leaf, opacity = 1) {
@@ -80,7 +117,11 @@ function drawLeaf(context: CanvasRenderingContext2D, leaf: Leaf, opacity = 1) {
   context.restore();
 }
 
-export default function AutumnLeaves() {
+export default function SeasonalFallingParticles({
+  kind = "autumn",
+}: {
+  kind?: SeasonalParticleKind;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRef = useRef(0);
   const resumeRef = useRef<() => void>(() => undefined);
@@ -94,6 +135,7 @@ export default function AutumnLeaves() {
     if (!canvas || !context) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const drawParticle = kind === "winter" ? drawSnowflake : drawLeaf;
     let width = 0;
     let height = 0;
     let leaves: Leaf[] = [];
@@ -110,7 +152,7 @@ export default function AutumnLeaves() {
       context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
       const leafCount = width < 720 ? 12 : 20;
-      leaves = Array.from({ length: leafCount }, () => createLeaf(width, height, true));
+      leaves = Array.from({ length: leafCount }, () => createLeaf(width, height, true, kind));
     };
 
     const drawStaticLeaves = () => {
@@ -119,7 +161,7 @@ export default function AutumnLeaves() {
         leaf.x = width * (0.66 + index * 0.12);
         leaf.y = height * (0.22 + index * 0.24);
         leaf.opacity = 0.42;
-        drawLeaf(context, leaf);
+        drawParticle(context, leaf);
       });
     };
 
@@ -137,9 +179,9 @@ export default function AutumnLeaves() {
         leaf.tilt += leaf.tiltSpeed * deltaSeconds;
 
         if (leaf.y > height + leaf.size * 2 || leaf.x < -80 || leaf.x > width + 80) {
-          Object.assign(leaf, createLeaf(width, height));
+          Object.assign(leaf, createLeaf(width, height, false, kind));
         }
-        drawLeaf(context, leaf);
+        drawParticle(context, leaf);
       });
       animationFrameRef.current = window.requestAnimationFrame(animate);
     };
@@ -186,7 +228,7 @@ export default function AutumnLeaves() {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       reducedMotion.removeEventListener("change", handleMotionPreference);
     };
-  }, []);
+  }, [kind]);
 
   const togglePaused = () => {
     const nextPaused = !pausedRef.current;
@@ -209,7 +251,11 @@ export default function AutumnLeaves() {
         disabled={motionReduced}
         onClick={togglePaused}
       >
-        {motionReduced ? "落叶已静止" : isPaused ? "继续落叶" : "暂停落叶"}
+        {motionReduced
+          ? kind === "winter" ? "雪花已静止" : "落叶已静止"
+          : isPaused
+            ? kind === "winter" ? "继续飘雪" : "继续落叶"
+            : kind === "winter" ? "暂停飘雪" : "暂停落叶"}
       </button>
     </>
   );

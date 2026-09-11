@@ -8,7 +8,7 @@ import { DEFAULT_AI_DECK_ID, randomAiDeckId } from "@/styles/ai-decks";
 import type { DemoThemeMode } from "./demo-theme";
 import { GARDEN_SEASONS } from "./garden-season";
 import { getGardenPageHref } from "./ui-variant";
-import AutumnLeaves from "./AutumnLeaves";
+import SeasonalFallingParticles from "./AutumnLeaves";
 import styles from "./tarot-demo.module.css";
 
 export type DemoVariant = "garden" | "eclipse" | "theatre";
@@ -57,7 +57,10 @@ const DEMOS: Record<DemoVariant, DemoConfig> = {
   },
 };
 
-const GARDEN_IMAGES: Record<GardenSeason, Pick<DemoConfig, "image" | "darkImage" | "imageAlt">> = {
+type GardenVisualConfig = Pick<DemoConfig, "image" | "darkImage" | "imageAlt"> &
+  Partial<Pick<DemoConfig, "title">>;
+
+const GARDEN_IMAGES: Record<GardenSeason, GardenVisualConfig> = {
   spring: {
     image: "/demo-assets/sakura-garden-hero-light-v3.webp",
     darkImage: "/demo-assets/sakura-garden-hero-dark-v3.webp",
@@ -77,6 +80,7 @@ const GARDEN_IMAGES: Record<GardenSeason, Pick<DemoConfig, "image" | "darkImage"
     image: "/demo-assets/garden-winter-light.webp",
     darkImage: "/demo-assets/garden-winter-dark.webp",
     imageAlt: "冬日积雪、山茶、溪流与塔罗牌组成的寂静庭院",
+    title: ["在雪落之时", "问问内心"],
   },
 };
 
@@ -109,7 +113,7 @@ export default function TarotDemo({
   const baseDemo = DEMOS[variant];
   const demo = variant === "garden" ? { ...baseDemo, ...GARDEN_IMAGES[gardenSeason] } : baseDemo;
   const nextTheme = themeMode === "dark" ? "light" : "dark";
-  const themeLabel = themeMode === "dark" ? "浅色预览" : "深色预览";
+  const themeLabel = themeMode === "dark" ? "日间模式" : "夜间模式";
   const isProduction = experienceMode === "production";
   const pageRoute = isProduction ? "/" : demo.route;
   const themeHref = variant === "garden"
@@ -302,7 +306,10 @@ export default function TarotDemo({
                 fetchPriority="high"
               />
             )}
-            {variant === "garden" && gardenSeason === "autumn" && <AutumnLeaves />}
+            {variant === "garden" &&
+              (gardenSeason === "autumn" || gardenSeason === "winter") && (
+                <SeasonalFallingParticles kind={gardenSeason} />
+              )}
             <div className={styles.imageFrame} aria-hidden="true" />
           </div>
         </section>

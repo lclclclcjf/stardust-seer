@@ -6,3 +6,4 @@
 - AI reading generation uses a one-shot 1.56s requestAnimationFrame decode with 56ms glyph steps and left-to-right settle deadlines; it changes only textContent, has no layout animation, and skips entirely for reduced motion.
 - The theme gallery uses a capped ±4° transform-only pointer tilt with a 280ms ease-out return and an on-demand Canvas 2D ripple field. Ripples cap at eight, stop rendering when settled or hidden, and both effects are disabled for reduced motion.
 - The autumn Garden preview uses one Canvas 2D layer with 20 desktop or 12 mobile maple leaves, requestAnimationFrame movement at 1.5x fall speed, a 1.5 DPR cap, tab-visibility pausing, and a user-facing pause/resume control; reduced motion renders 2-3 static leaves.
+- Winter Garden reuses the same Canvas particle cadence and fall-speed range as autumn, drawing six-arm snowflakes at 120% of leaf size; the pause control, visibility handling, DPR cap, and reduced-motion static fallback remain shared.

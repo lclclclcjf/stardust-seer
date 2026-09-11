@@ -22,3 +22,4 @@
 - Theme identity is carried separately from light/dark mode as `uiVariant`; draw uses each variant's dark scene, reading resolves paired light/dark artwork, and legacy records safely default to Garden.
 
 - 花札剧场主题缩略图复用已上线的 16:9 暖日光剧场资产；以 `object-fit: cover` 和 52% 水平焦点铺满窗口，在裁切左右边缘的同时保留飞牌与面具。
+- The shared demo theme switch uses destination-oriented labels: “夜间模式” when it will enter dark mode and “日间模式” when it will enter light mode, including mobile navigation.
