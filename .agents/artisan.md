@@ -23,3 +23,4 @@
 
 - 花札剧场主题缩略图复用已上线的 16:9 暖日光剧场资产；以 `object-fit: cover` 和 52% 水平焦点铺满窗口，在裁切左右边缘的同时保留飞牌与面具。
 - The shared demo theme switch uses destination-oriented labels: “夜间模式” when it will enter dark mode and “日间模式” when it will enter light mode, including mobile navigation.
+- All illustrated tarot faces now share four approved image medallions: major arcana resolve their declared element, while minor arcana map Wands to fire, Cups to water, Swords to air, and Pentacles to earth; the surrounding theme artwork, card backs, numbers, and titles remain unchanged.

@@ -42,6 +42,13 @@ const CARD_SERIES: Record<string, string> = {
   classic: "经典重构",
 };
 
+const CARD_ASSET_TITLES: Record<string, string> = {
+  "element-fire-medallion-v1.webp": "牌心元素 · 火",
+  "element-water-medallion-v1.webp": "牌心元素 · 水",
+  "element-air-medallion-v1.webp": "牌心元素 · 风",
+  "element-earth-medallion-v1.webp": "牌心元素 · 土",
+};
+
 async function walk(directory: string): Promise<string[]> {
   const entries = await readdir(directory, { withFileTypes: true });
   const paths = await Promise.all(entries.map((entry) => {
@@ -67,6 +74,7 @@ async function referencedAssets(): Promise<Set<string>> {
 }
 
 function cardTitle(filename: string): string {
+  if (CARD_ASSET_TITLES[filename]) return CARD_ASSET_TITLES[filename];
   const aiDeck = AI_DECKS.find((deck) => filename.includes(`ai-${deck.id}-card-`));
   const series = aiDeck?.nameZh ?? Object.entries(CARD_SERIES).find(([id]) => filename.startsWith(id))?.[1] ?? "塔罗设计";
   return `${series} · ${filename.includes("-back-") ? "牌背" : "牌面"}`;

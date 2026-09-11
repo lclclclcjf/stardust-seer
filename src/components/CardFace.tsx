@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import type { AiDeckId, TarotCard, ThemeId } from '@/types';
 import { getAiDeck } from '@/styles/ai-decks';
 import { themeStyles } from '@/styles/themes';
@@ -64,7 +65,13 @@ export default function CardFace({
         </span>
 
         <span className={styles.symbolStage} aria-hidden="true">
-          <span className={styles.cardSymbol}>{cardGlyph(card)}</span>
+          <Image
+            className={styles.elementImage}
+            src={elementImage(card)}
+            alt=""
+            width={512}
+            height={512}
+          />
         </span>
 
         <span className={styles.faceTitle}>
@@ -96,16 +103,30 @@ export default function CardFace({
   );
 }
 
-function cardGlyph(card: TarotCard): string {
-  const glyphs: Record<TarotCard['suit'], string> = {
-    major: '✦',
-    wands: '火',
-    cups: '水',
-    swords: '風',
-    pentacles: '土',
+type ElementKind = 'fire' | 'water' | 'air' | 'earth';
+
+const ELEMENT_IMAGE: Record<ElementKind, string> = {
+  fire: '/card-assets/element-fire-medallion-v1.webp',
+  water: '/card-assets/element-water-medallion-v1.webp',
+  air: '/card-assets/element-air-medallion-v1.webp',
+  earth: '/card-assets/element-earth-medallion-v1.webp',
+};
+
+function elementImage(card: TarotCard): string {
+  if (card.element === '火') return ELEMENT_IMAGE.fire;
+  if (card.element === '水') return ELEMENT_IMAGE.water;
+  if (card.element === '土') return ELEMENT_IMAGE.earth;
+  if (card.element === '风' || card.element === '風') return ELEMENT_IMAGE.air;
+
+  const fallback: Record<TarotCard['suit'], ElementKind> = {
+    major: 'air',
+    wands: 'fire',
+    cups: 'water',
+    swords: 'air',
+    pentacles: 'earth',
   };
 
-  return glyphs[card.suit];
+  return ELEMENT_IMAGE[fallback[card.suit]];
 }
 
 function romanNumeral(n: number): string {
